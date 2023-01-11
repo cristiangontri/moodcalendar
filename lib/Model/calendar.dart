@@ -4,68 +4,110 @@ import 'package:emotionscalendar/Model/year.dart';
 import 'package:flutter/cupertino.dart';
 
 class Calendar extends ChangeNotifier {
-  DateTime today;
-  DateTime currentDate;
-  late Year currentYear;
-  late Month currentMonth;
-  late Day currentDay;
-  DateTime from;
-  List<Month> months = [];
-  List<Year> years = [];
+  final DateTime _today;
+  DateTime _currentDate;
+  late Year _currentYear;
+  late Month _currentMonth;
+  late Day _currentDay;
+  final DateTime _from;
+  List<Month> _months = [];
+  List<Year> _years = [];
 
-  Calendar(this.today, this.currentDate, this.from) {
+  Calendar(this._today, this._currentDate, this._from) {
     //Lets define the current Year:
-    currentYear = Year(currentDate.year);
-    years.add(currentYear);
 
     //Getting the List of Months to Display:
-    DateTime iterator = from;
-    while (iterator.isBefore(today)) {
+    DateTime iterator = DateTime(_from.year, _from.month);
+    while (iterator.isBefore(DateTime(_today.year, _today.month + 1))) {
       Month newMonth = Month(iterator.month, Year(iterator.year));
-      months.add(newMonth);
+      _months.add(newMonth);
       iterator = DateTime(iterator.year, iterator.month + 1);
     }
 
     //Lets add all years needed:
 
-    for (int i = 0; i <= months.length / 13; i++) {
-      years.add(Year(currentYear.getYearNumber() + 1));
+    for (Month m in _months) {
+      if (m.getMonthNumber() == 12) {
+        _years.add(Year(m.getYear().getYearNumber() + 1));
+      }
     }
+    _currentYear = _years.last;
 
-    //Lets define the current month:
-    currentMonth = months.firstWhere((element) =>
-        element.getMonthNumber() == currentDate.month &&
-        element.getYear().getYearNumber() == currentYear.getYearNumber());
+    _currentYear.selectYear();
+
+    //Lets define the current month and select it:
+    _currentMonth = _months.firstWhere((element) =>
+        element.getMonthNumber() == _currentDate.month &&
+        element.getYear().getYearNumber() == _currentYear.getYearNumber());
+    _currentMonth.selectMonth();
 
     //Lets define the current day:
-    currentDay = Day(currentDate.day, currentMonth, currentYear);
+    _currentDay = _currentMonth.findDay(_today.day) ??
+        Day(0, _currentMonth, _currentYear);
+    _currentDay.select();
+    notifyListeners();
   }
   void changeCurrentDate(DateTime date) {
-    currentDate = date;
+    _currentDate = date;
     notifyListeners();
   }
 
   List<Month> getMonths() {
-    return months;
+    return _months;
   }
 
   void changeMonth(Month month) {
-    currentMonth.unselectMonth();
+    _currentMonth.unselectMonth();
     month.selectMonth();
-    currentMonth = month;
-    currentYear = month.getYear();
+    _currentMonth = month;
+    _currentYear = month.getYear();
     notifyListeners();
   }
 
   Month getCurrentMonth() {
-    return currentMonth;
+    return _currentMonth;
   }
 
   Year getCurrentYear() {
-    return currentYear;
+    return _currentYear;
   }
 
   Day getCurrentDay() {
-    return currentDay;
+    return _currentDay;
+  }
+
+  List<Year> getYearList() {
+    return _years;
+  }
+
+  void selectDay(Day d) {
+    _currentDay.unselect();
+    d.select();
+    _currentDay = d;
+    notifyListeners();
+  }
+
+  List<Object> getPrintableListYaM() {
+    List<Object> result = [];
+    int cm = 0;
+    int cy = 0;
+    bool decem = false;
+    for (int i = 0; i < _years.length + _months.length; i++) {
+      if (decem) {
+        result.add(_years[cy]);
+        cy++;
+        decem = false;
+      } else {
+        String mname = _months[cm].getMonthName();
+        if (mname == "DECEMBER") {
+          decem = true;
+        } else {
+          decem = false;
+        }
+        result.add(_months[cm]);
+        cm++;
+      }
+    }
+    return result;
   }
 }

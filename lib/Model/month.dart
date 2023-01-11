@@ -1,67 +1,74 @@
+import 'package:emotionscalendar/Model/calendar.dart';
+import 'package:emotionscalendar/Model/day.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:emotionscalendar/Model/year.dart';
 
-class Month extends ChangeNotifier {
+class Month {
   final int _monthNumber;
   String _monthName = "";
   final Year _year;
-  late int _monthDays;
+  late int _monthDaysNumber;
+  List<Day> _monthDays = [];
   bool _selected = false;
+
   Month(this._monthNumber, this._year) {
     _monthName = _monthName.toUpperCase();
 
     switch (_monthNumber) {
       case 1:
         _monthName = "JANUARY";
-        _monthDays = 31;
+        _monthDaysNumber = 31;
         break;
       case 2:
         _monthName = "FEBRUARY";
-        _monthDays = 28;
+        _monthDaysNumber = 28;
         break;
       case 3:
         _monthName = "MARCH";
-        _monthDays = 31;
+        _monthDaysNumber = 31;
         break;
       case 4:
         _monthName = "APRIL";
-        _monthDays = 30;
+        _monthDaysNumber = 30;
         break;
       case 5:
         _monthName = "MAY";
-        _monthDays = 31;
+        _monthDaysNumber = 31;
         break;
       case 6:
         _monthName = "JUNE";
-        _monthDays = 30;
+        _monthDaysNumber = 30;
         break;
       case 7:
         _monthName = "JULY";
-        _monthDays = 31;
+        _monthDaysNumber = 31;
         break;
       case 8:
         _monthName = "AUGUST";
-        _monthDays = 31;
+        _monthDaysNumber = 31;
         break;
       case 9:
         _monthName = "SEPTEMBER";
-        _monthDays = 30;
+        _monthDaysNumber = 30;
         break;
       case 10:
         _monthName = "OCTOBER";
-        _monthDays = 31;
+        _monthDaysNumber = 31;
         break;
       case 11:
         _monthName = "NOVEMBER";
-        _monthDays = 30;
+        _monthDaysNumber = 30;
         break;
       case 12:
         _monthName = "DECEMBER";
-        _monthDays = 31;
+        _monthDaysNumber = 31;
         break;
       default:
         break;
+    }
+    for (int i = 0; i < _monthDaysNumber; i++) {
+      _monthDays.add(Day(i + 1, this, _year));
     }
   }
 
@@ -83,15 +90,26 @@ class Month extends ChangeNotifier {
 
   void selectMonth() {
     _selected = true;
-    notifyListeners();
   }
 
   void unselectMonth() {
     _selected = false;
-    notifyListeners();
   }
 
-  int getMonthDays() {
+  int getNumberOfDays() {
+    return _monthDaysNumber;
+  }
+
+  List<Day> getDays() {
     return _monthDays;
+  }
+
+  Day? findDay(int i) {
+    for (Day d in _monthDays) {
+      if (i == d.getDay()) {
+        return d;
+      }
+    }
+    return null;
   }
 }

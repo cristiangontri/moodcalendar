@@ -10,7 +10,7 @@ class Day {
   final int _day;
   String _weekDay = "";
   bool _selected = false;
-  Emotion? _emotion;
+  Emotion _emotion = Emotion.unassigned;
   String? _notes;
 
   Day(this._day, this._month, this._year) {
@@ -45,7 +45,7 @@ class Day {
     }
   }
 
-  bool getSelected() {
+  bool isSelected() {
     return _selected;
   }
 
@@ -74,7 +74,7 @@ class Day {
   }
 
   Emotion? getEmotion() {
-    return _emotion ?? Emotion.unassigned;
+    return _emotion;
   }
 
   Year getYear() {

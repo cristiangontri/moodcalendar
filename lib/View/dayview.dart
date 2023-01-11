@@ -1,13 +1,14 @@
+import 'package:emotionscalendar/Controller/controller.dart';
 import 'package:emotionscalendar/Model/day.dart';
 import 'package:flutter/material.dart';
 
 import '../Model/emotion.dart';
 
 class DayView extends StatefulWidget {
-  Day day;
-  double calendarHeight;
+  final Day day;
+  final double calendarHeight;
   late Color emotionColor;
-  Color dotsColor;
+  final Color dotsColor;
   DayView(this.day, this.calendarHeight, this.dotsColor, {Key? key})
       : super(key: key) {
     switch (day.getEmotion()) {
@@ -49,57 +50,106 @@ class _DayViewState extends State<DayView> {
   @override
   Widget build(BuildContext context) {
     var maxwidth = (MediaQuery.of(context).size.width);
-    return Container(
-      width: widget.calendarHeight * 0.08,
-      height: widget.calendarHeight * 0.10,
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 255, 118, 118),
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            spreadRadius: 2,
-            blurRadius: 4,
-            offset: Offset(0, 3), // changes position of shadow
+    if (widget.day.isSelected()) {
+      return GestureDetector(
+        onTap: () => CalendarController().selectDay(widget.day, context),
+        child: Container(
+          width: widget.calendarHeight * 0.3,
+          height: widget.calendarHeight * 0.4,
+          decoration: BoxDecoration(
+            color: widget.emotionColor,
+            borderRadius: BorderRadius.circular(15),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                spreadRadius: 2,
+                blurRadius: 4,
+                offset: Offset(0, 3), // changes position of shadow
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Row(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Container(
-                height: 6,
-                width: 6,
-                decoration: BoxDecoration(
-                    color: widget.dotsColor,
-                    borderRadius: BorderRadius.circular(20)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    height: 6,
+                    width: 6,
+                    decoration: BoxDecoration(
+                        color: widget.dotsColor,
+                        borderRadius: BorderRadius.circular(20)),
+                  ),
+                  Container(
+                    height: 6,
+                    width: 6,
+                    decoration: BoxDecoration(
+                        color: widget.dotsColor,
+                        borderRadius: BorderRadius.circular(20)),
+                  )
+                ],
               ),
-              Container(
-                height: 6,
-                width: 6,
-                decoration: BoxDecoration(
+              Text(
+                widget.day.getDay().toString(),
+                style: TextStyle(
                     color: widget.dotsColor,
-                    borderRadius: BorderRadius.circular(20)),
+                    fontSize: 35,
+                    fontWeight: FontWeight.bold),
+              ),
+              Text(
+                widget.day.getWeekDay(),
+                style: TextStyle(
+                    color: widget.dotsColor, fontWeight: FontWeight.bold),
               )
             ],
           ),
-          Text(
-            widget.day.getDay().toString(),
-            style: TextStyle(
-                color: widget.emotionColor,
-                fontSize: 35,
-                fontWeight: FontWeight.bold),
+        ),
+      );
+    } else {
+      return GestureDetector(
+        onTap: () => CalendarController().selectDay(widget.day, context),
+        child: SizedBox(
+          width: widget.calendarHeight * 0.3,
+          height: widget.calendarHeight * 0.4,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    height: 6,
+                    width: 6,
+                    decoration: BoxDecoration(
+                        color: widget.dotsColor,
+                        borderRadius: BorderRadius.circular(20)),
+                  ),
+                  Container(
+                    height: 6,
+                    width: 6,
+                    decoration: BoxDecoration(
+                        color: widget.dotsColor,
+                        borderRadius: BorderRadius.circular(20)),
+                  )
+                ],
+              ),
+              Text(
+                widget.day.getDay().toString(),
+                style: TextStyle(
+                    color: widget.emotionColor,
+                    fontSize: 35,
+                    fontWeight: FontWeight.bold),
+              ),
+              Text(
+                widget.day.getWeekDay(),
+                style: TextStyle(
+                    color: widget.emotionColor, fontWeight: FontWeight.bold),
+              )
+            ],
           ),
-          Text(
-            widget.day.getWeekDay(),
-            style: TextStyle(
-                color: widget.emotionColor, fontWeight: FontWeight.bold),
-          )
-        ],
-      ),
-    );
+        ),
+      );
+    }
   }
 }
