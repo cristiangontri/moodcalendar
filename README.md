@@ -1,16 +1,4 @@
-# emotionscalendar
+# MOOD.
 
-A new Flutter project.
+An app that allows users to track their emotions using a calendarn to store them. They would also be able to create a note inside the emotion, so that they can remember why they felt that way.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
