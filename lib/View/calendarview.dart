@@ -1,22 +1,17 @@
-import 'package:emotionscalendar/Model/day.dart';
-import 'package:emotionscalendar/Model/month.dart';
-import 'package:emotionscalendar/Model/year.dart';
-import 'package:emotionscalendar/View/colors.dart';
+import 'package:emotionscalendar/Controller/controller.dart';
 import 'package:emotionscalendar/View/dayview.dart';
-import 'package:emotionscalendar/View/monthview.dart';
-import 'package:emotionscalendar/View/yearview.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import '../Model/calendar.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class CalendarView extends StatefulWidget {
+  //MAIN VIEW OF APPLICATION
   final Color backgroundColor;
   final Color dotsColor;
   final Color monthColor;
-  final double calendarHeight;
+  final double calendarMinimizedHeight;
+
   const CalendarView(this.backgroundColor, this.dotsColor, this.monthColor,
-      this.calendarHeight,
+      this.calendarMinimizedHeight,
       {Key? key})
       : super(key: key);
 
@@ -25,79 +20,149 @@ class CalendarView extends StatefulWidget {
 }
 
 class _CalendarViewState extends State<CalendarView> {
+  Box? box;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    box = Hive.box("Dates");
+  }
+
   @override
   Widget build(BuildContext context) {
+    CalendarController controller = CalendarController();
     var maxwidth = (MediaQuery.of(context).size.width);
-    ScrollController _scrollController =
-        ScrollController(initialScrollOffset: 13, keepScrollOffset: true);
+    var maxheight = (MediaQuery.of(context).size.height);
+    var expandedHeight = (MediaQuery.of(context).size.height) * 0.8;
+
+    ScrollController scrollController =
+        ScrollController(initialScrollOffset: 0, keepScrollOffset: true);
+
     return Container(
+      clipBehavior: Clip.hardEdge,
       width: maxwidth,
-      height: widget.calendarHeight,
+      height: maxheight,
       decoration: const BoxDecoration(
-          color: Color.fromARGB(255, 49, 44, 70),
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(12),
-              bottomRight: Radius.circular(12))),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 8.0, left: 8.0),
-            child: Text(
-              "Calendar",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold),
-            ),
-          ),
-          SizedBox(
-            width: maxwidth,
-            height: 50,
-            child: ListView.separated(
-                controller: _scrollController,
-                separatorBuilder: (context, index) => const SizedBox(
-                      width: 10,
+        color: Color.fromARGB(255, 49, 44, 70),
+        /*borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(12),
+                bottomRight: Radius.circular(12))*/
+      ),
+      child: Center(
+        child: SizedBox(
+          width: maxwidth * 0.9,
+          height: maxheight * 0.9,
+          child: ValueListenableBuilder(
+            valueListenable: box!.listenable(),
+            builder: (context, box, child) {
+              return ScrollConfiguration(
+                behavior: MyBehavior(),
+                child: GridView.count(
+                  crossAxisCount: 7,
+                  crossAxisSpacing: 0,
+                  mainAxisSpacing: 0,
+                  childAspectRatio: 1 / 1,
+                  shrinkWrap: true,
+                  children: List.generate(
+                    365,
+                    (index) => Center(
+                      child: box.get(index + 1) != null
+                          ? DayView(box.get(index + 1),
+                              widget.calendarMinimizedHeight, widget.dotsColor)
+                          : CalendarController()
+                                      .getCurrentDate(context)
+                                      .getDay() ==
+                                  index + 1
+                              ? Container(
+                                  width: 35,
+                                  height: 35,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.green),
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Container(
+                                            height: 6,
+                                            width: 6,
+                                            decoration: BoxDecoration(
+                                                color: widget.dotsColor,
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                          ),
+                                          Container(
+                                            height: 6,
+                                            width: 6,
+                                            decoration: BoxDecoration(
+                                                color: widget.dotsColor,
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                          )
+                                        ],
+                                      ),
+                                      Text((index + 1).toString())
+                                    ],
+                                  ),
+                                )
+                              : Container(
+                                  width: 35,
+                                  height: 35,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Container(
+                                            height: 6,
+                                            width: 6,
+                                            decoration: BoxDecoration(
+                                                color: widget.dotsColor,
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                          ),
+                                          Container(
+                                            height: 6,
+                                            width: 6,
+                                            decoration: BoxDecoration(
+                                                color: widget.dotsColor,
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                          ),
+                                        ],
+                                      ),
+                                      Text((index + 1).toString())
+                                    ],
+                                  ),
+                                ),
                     ),
-                scrollDirection: Axis.horizontal,
-                itemCount:
-                    Provider.of<Calendar>(context).getPrintableListYaM().length,
-                itemBuilder: (context, index) {
-                  List<Object> printable =
-                      Provider.of<Calendar>(context).getPrintableListYaM();
-                  if (printable[index] is Month) {
-                    return Center(
-                        child: MonthView(
-                            printable[index] as Month, widget.monthColor));
-                  } else {
-                    Year yr = printable[index] as Year;
-                    return Center(child: YearView(yr, widget.monthColor));
-                  }
-                }),
+                  ),
+                ),
+              );
+            },
           ),
-          SizedBox(
-            width: maxwidth,
-            height: widget.calendarHeight * 0.5,
-            child: ListView.separated(
-              separatorBuilder: (context, index) => const SizedBox(
-                width: 10,
-              ),
-              scrollDirection: Axis.horizontal,
-              itemCount: Provider.of<Calendar>(context)
-                  .getCurrentMonth()
-                  .getNumberOfDays(),
-              itemBuilder: (context, index) {
-                List<Day> days =
-                    Provider.of<Calendar>(context).getCurrentMonth().getDays();
-                return Center(
-                  child: DayView(
-                      days[index], widget.calendarHeight, widget.dotsColor),
-                );
-              },
-            ),
-          ),
-        ]),
+        ),
       ),
     );
+  }
+}
+
+class MyBehavior extends ScrollBehavior {
+  //HIDES SCROLL GLOW
+  @override
+  Widget buildOverscrollIndicator(
+      BuildContext context, Widget child, ScrollableDetails details) {
+    return child;
   }
 }

@@ -1,39 +1,41 @@
 import 'package:emotionscalendar/Controller/controller.dart';
-import 'package:emotionscalendar/Model/day.dart';
+import 'package:emotionscalendar/db/datedao.dart';
+
 import 'package:flutter/material.dart';
 
 import '../Model/emotion.dart';
 
 class DayView extends StatefulWidget {
-  final Day day;
+  final DateDao date;
   final double calendarHeight;
   late Color emotionColor;
   final Color dotsColor;
-  DayView(this.day, this.calendarHeight, this.dotsColor, {Key? key})
+
+  DayView(this.date, this.calendarHeight, this.dotsColor, {Key? key})
       : super(key: key) {
-    switch (day.getEmotion()) {
-      case Emotion.happy:
+    switch (date.getEmotion()) {
+      case "HAPPY":
         emotionColor = Colors.teal;
         break;
-      case Emotion.crying:
-        emotionColor = Colors.indigo.shade800;
+      case "CRYING":
+        emotionColor = const Color.fromARGB(255, 71, 92, 255);
         break;
-      case Emotion.calm:
+      case "CALM":
         emotionColor = Colors.yellow.shade200;
         break;
-      case Emotion.loved:
+      case "LOVED":
         emotionColor = Colors.redAccent.shade400;
-        // TODO: Handle this case.
+
         break;
-      case Emotion.angry:
-        emotionColor = Colors.purple.shade900;
-        // TODO: Handle this case.
+      case "ANGRY":
+        emotionColor = Color.fromARGB(255, 133, 30, 30);
+
         break;
-      case Emotion.bad:
+      case "BAD":
         emotionColor = Colors.black45;
-        // TODO: Handle this case.
+
         break;
-      case Emotion.unassigned:
+      case "UNASSIGNED":
         emotionColor = Colors.grey.shade400;
         // TODO: Handle this case.
         break;
@@ -50,9 +52,74 @@ class _DayViewState extends State<DayView> {
   @override
   Widget build(BuildContext context) {
     var maxwidth = (MediaQuery.of(context).size.width);
-    if (widget.day.isSelected()) {
+
+    return CalendarController().getCurrentDate(context).getDay ==
+            widget.date.getDay
+        ? Container(
+            width: 35,
+            height: 35,
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.orange.shade800, width: 3),
+                color: widget.emotionColor,
+                borderRadius: BorderRadius.circular(10)),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        height: 6,
+                        width: 6,
+                        decoration: BoxDecoration(
+                            color: widget.dotsColor,
+                            borderRadius: BorderRadius.circular(20)),
+                      ),
+                      Container(
+                        height: 6,
+                        width: 6,
+                        decoration: BoxDecoration(
+                            color: widget.dotsColor,
+                            borderRadius: BorderRadius.circular(20)),
+                      )
+                    ],
+                  ),
+                  Text(widget.date.getDay().toString())
+                ]))
+        : Container(
+            width: 35,
+            height: 35,
+            decoration: BoxDecoration(
+                color: widget.emotionColor,
+                borderRadius: BorderRadius.circular(10)),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        height: 6,
+                        width: 6,
+                        decoration: BoxDecoration(
+                            color: widget.dotsColor,
+                            borderRadius: BorderRadius.circular(20)),
+                      ),
+                      Container(
+                        height: 6,
+                        width: 6,
+                        decoration: BoxDecoration(
+                            color: widget.dotsColor,
+                            borderRadius: BorderRadius.circular(20)),
+                      )
+                    ],
+                  ),
+                  Text(widget.date.getDay().toString())
+                ]));
+
+    /*if (CalendarController().getCurrentDate(context).equals(widget.date)) {
       return GestureDetector(
-        onTap: () => CalendarController().selectDay(widget.day, context),
+        onTap: () => CalendarController().setCurrentDate(widget.date, context),
         child: Container(
           width: widget.calendarHeight * 0.3,
           height: widget.calendarHeight * 0.4,
@@ -62,9 +129,10 @@ class _DayViewState extends State<DayView> {
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.3),
-                spreadRadius: 2,
-                blurRadius: 4,
-                offset: Offset(0, 3), // changes position of shadow
+                spreadRadius: 1,
+                blurRadius: 10,
+
+                offset: const Offset(0, 5), // changes position of shadow
               ),
             ],
           ),
@@ -91,24 +159,19 @@ class _DayViewState extends State<DayView> {
                 ],
               ),
               Text(
-                widget.day.getDay().toString(),
+                widget.date.getDay().toString(),
                 style: TextStyle(
                     color: widget.dotsColor,
                     fontSize: 35,
                     fontWeight: FontWeight.bold),
               ),
-              Text(
-                widget.day.getWeekDay(),
-                style: TextStyle(
-                    color: widget.dotsColor, fontWeight: FontWeight.bold),
-              )
             ],
           ),
         ),
       );
     } else {
       return GestureDetector(
-        onTap: () => CalendarController().selectDay(widget.day, context),
+        onTap: () => CalendarController().setCurrentDate(widget.date, context),
         child: SizedBox(
           width: widget.calendarHeight * 0.3,
           height: widget.calendarHeight * 0.4,
@@ -135,21 +198,16 @@ class _DayViewState extends State<DayView> {
                 ],
               ),
               Text(
-                widget.day.getDay().toString(),
+                widget.date.getDay().toString(),
                 style: TextStyle(
                     color: widget.emotionColor,
                     fontSize: 35,
                     fontWeight: FontWeight.bold),
               ),
-              Text(
-                widget.day.getWeekDay(),
-                style: TextStyle(
-                    color: widget.emotionColor, fontWeight: FontWeight.bold),
-              )
             ],
           ),
         ),
       );
-    }
+    }*/
   }
 }
