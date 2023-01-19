@@ -15,9 +15,8 @@ import 'package:provider/provider.dart';
 Future<void> main() async {
   //STATUSBAR COLOR:
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    systemNavigationBarColor:
-        Color.fromARGB(255, 49, 44, 70), // navigation bar color
-    statusBarColor: Color.fromARGB(255, 49, 44, 70), // status bar color
+    systemNavigationBarColor: myBackgroundColor, // navigation bar color
+    statusBarColor: myBackgroundColor, // status bar color
   ));
   WidgetsFlutterBinding.ensureInitialized();
   //STORAGE DIRECTORY:
@@ -34,7 +33,7 @@ Future<void> main() async {
   if (box.length == 0) {
     //FIRST TIME OPENING THE APP
     box.put(yearDay,
-        DateDao(yearDay, now.month, now.year, Emotion.unassigned.getName()));
+        DateDao(now.day, now.month, now.year, Emotion.unassigned.getName()));
   } else {
     //THE APP HAS STORED DATA
     List contains = box.values
@@ -46,11 +45,11 @@ Future<void> main() async {
     if (contains.isEmpty) {
       //CURRENT DATE IS NOT STORED
       box.put(yearDay,
-          DateDao(yearDay, now.month, now.year, Emotion.unassigned.getName()));
+          DateDao(now.day, now.month, now.year, Emotion.unassigned.getName()));
     }
   }
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -58,12 +57,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DateDao currentDate = Hive.box("Dates").getAt(Hive.box("Dates").length - 1);
     return MultiProvider(
         //START CALENDAR PROVIDER
         providers: [
           ChangeNotifierProvider(
-              create: (context) => Calendar(
-                  Hive.box("Dates").getAt(Hive.box("Dates").length - 1))),
+              create: (context) => Calendar(currentDate, currentDate)),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -86,19 +85,34 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
+    CalendarController controller = CalendarController();
+    var maxheight = (MediaQuery.of(context).size.height);
+    var maxwidth = (MediaQuery.of(context).size.width);
+    Emotion value = EmotionExtension.parse(
+        controller.getSelectedDate(context).getEmotion());
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 49, 44, 70),
-          title: const Text("CALENDAR"),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  CalendarController().changeEmotion(Emotion.happy, context);
-                },
-                icon: const Icon(Icons.add))
+        backgroundColor: myBackgroundColor,
+        body: Column(
+          children: [
+            const Spacer(),
+            Container(
+              height: maxheight * 0.45,
+              width: maxwidth * 0.95,
+              decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 229, 245, 234),
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                  border: Border.all(color: Colors.white, width: 2),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color.fromARGB(80, 0, 0, 0),
+                      blurRadius: 2.0,
+                    ),
+                  ]),
+              child: Image.asset("assets/reading-side.png"),
+            ),
+            const CalendarView(
+                myBackgroundColor, myDotsColor, myMonthColor, 200)
           ],
-        ),
-        body: const CalendarView(
-            myBackgroundColor, myDotsColor, myMonthColor, 200));
+        ));
   }
 }

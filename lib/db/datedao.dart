@@ -48,7 +48,9 @@ class DateDao extends HiveObject {
     _emotion = e.getName();
   }
 
-  bool equals(DateDao d) {
-    return (_day == d.getDay() && _month == d._month && _year == d._year);
+  bool isequal(DateDao d) {
+    return (_day == d.getDay() &&
+        _month == d.getMonth() &&
+        _year == d.getYear());
   }
 }

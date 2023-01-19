@@ -16,4 +16,12 @@ class CalendarController {
   void changeEmotion(Emotion e, context) {
     Provider.of<Calendar>(context, listen: false).changeEmotion(e);
   }
+
+  DateDao getSelectedDate(context) {
+    return Provider.of<Calendar>(context, listen: false).getSelectedDate();
+  }
+
+  void setSelectedDate(context, DateDao d) {
+    Provider.of<Calendar>(context, listen: false).setSelectedDate(d);
+  }
 }
