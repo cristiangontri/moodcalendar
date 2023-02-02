@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'dart:ui';
 import 'package:emotionscalendar/Controller/controller.dart';
 import 'package:emotionscalendar/Model/calendar.dart';
+import 'package:emotionscalendar/View/signin.dart';
 import 'package:emotionscalendar/db/datedao.dart';
 import 'package:emotionscalendar/Model/dayyearcalculator.dart';
 import 'package:emotionscalendar/Model/emotion.dart';
@@ -18,14 +20,17 @@ Future<void> main() async {
     systemNavigationBarColor: myBackgroundColor, // navigation bar color
     statusBarColor: myBackgroundColor, // status bar color
   ));
-  WidgetsFlutterBinding.ensureInitialized();
+
   //STORAGE DIRECTORY:
+  WidgetsFlutterBinding.ensureInitialized();
+
   Directory appDocDir = await getApplicationDocumentsDirectory();
   String appDocPath = appDocDir.path;
   //INIT HIVE:
   await Hive.initFlutter(appDocPath);
   Hive.registerAdapter(DateDaoAdapter());
   Box box = await Hive.openBox('Dates');
+  Box userBox = await Hive.openBox('User');
   //GET CURRENT DAY:
   DateTime now = DateTime.now();
   int yearDay = DayYearCalculator(now).toYearDay();
@@ -58,6 +63,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DateDao currentDate = Hive.box("Dates").getAt(Hive.box("Dates").length - 1);
+    Box userBox = Hive.box("User");
     return MultiProvider(
         //START CALENDAR PROVIDER
         providers: [
@@ -68,9 +74,9 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Mood.',
           theme: ThemeData(
-            primarySwatch: Colors.blue,
+            primarySwatch: Colors.teal,
           ),
-          home: const Home(),
+          home: userBox.length == 0 ? SignIn() : const Home(),
         ));
   }
 }
@@ -85,34 +91,94 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    CalendarController controller = CalendarController();
     var maxheight = (MediaQuery.of(context).size.height);
     var maxwidth = (MediaQuery.of(context).size.width);
-    Emotion value = EmotionExtension.parse(
-        controller.getSelectedDate(context).getEmotion());
+    String username = Hive.box("User").getAt(Hive.box("User").length - 1);
     return Scaffold(
         backgroundColor: myBackgroundColor,
-        body: Column(
-          children: [
-            const Spacer(),
-            Container(
-              height: maxheight * 0.45,
-              width: maxwidth * 0.95,
-              decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 229, 245, 234),
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
-                  border: Border.all(color: Colors.white, width: 2),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color.fromARGB(80, 0, 0, 0),
-                      blurRadius: 2.0,
-                    ),
-                  ]),
-              child: Image.asset("assets/reading-side.png"),
-            ),
-            const CalendarView(
-                myBackgroundColor, myDotsColor, myMonthColor, 200)
-          ],
+        body: SafeArea(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Container(
+                  height: maxheight * 0.16,
+                  width: maxwidth * 0.95,
+                  decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 229, 245, 234),
+                      borderRadius: const BorderRadius.all(Radius.circular(15)),
+                      border: Border.all(color: Colors.white, width: 2),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color.fromARGB(80, 0, 0, 0),
+                          blurRadius: 2.0,
+                        ),
+                      ]),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: Center(
+                          child: Text(
+                            username,
+                            style: const TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 5),
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              myContainer(happyColor, "😊"),
+                              myContainer(calmColor, "😴"),
+                              myContainer(cryingColor, "😭"),
+                              myContainer(angryColor, "😡"),
+                              myContainer(badColor, "😞"),
+                              myContainer(lovedColor, "🥰"),
+                              myContainer(sickColor, "🤒"),
+                              myContainer(unasignedColor, "😐")
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const Spacer(),
+              const CalendarView(
+                  myBackgroundColor, myDotsColor, myMonthColor, 200),
+              Center(
+                child: SizedBox(
+                    height: maxheight * 0.35,
+                    child: Image.asset("assets/reading-side.png")),
+              ),
+            ],
+          ),
         ));
+  }
+
+  Widget myContainer(Color bg, String emoji) {
+    return Container(
+        width: 35,
+        height: 35,
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.white, width: 2),
+            color: bg,
+            borderRadius: BorderRadius.circular(10)),
+        child:
+            Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+          Text(
+            emoji,
+            style: const TextStyle(fontSize: 20),
+          )
+        ]));
   }
 }
