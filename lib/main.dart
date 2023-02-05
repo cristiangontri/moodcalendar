@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:emotionscalendar/Controller/controller.dart';
 import 'package:emotionscalendar/Model/calendar.dart';
+import 'package:emotionscalendar/View/mainpage.dart';
 import 'package:emotionscalendar/View/signin.dart';
 import 'package:emotionscalendar/db/datedao.dart';
 import 'package:emotionscalendar/Model/dayyearcalculator.dart';
@@ -10,6 +11,7 @@ import 'package:emotionscalendar/View/calendarview.dart';
 import 'package:emotionscalendar/View/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -76,7 +78,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.teal,
           ),
-          home: userBox.length == 0 ? SignIn() : const Home(),
+          home: userBox.length == 0 ? SignIn() : MainPage(),
         ));
   }
 }
@@ -89,6 +91,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  CalendarView myCalendar =
+      CalendarView(myBackgroundColor, myDotsColor, myMonthColor, 200);
   @override
   Widget build(BuildContext context) {
     var maxheight = (MediaQuery.of(context).size.height);
@@ -97,71 +101,101 @@ class _HomeState extends State<Home> {
     return Scaffold(
         backgroundColor: myBackgroundColor,
         body: SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Container(
-                  height: maxheight * 0.16,
-                  width: maxwidth * 0.95,
-                  decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 229, 245, 234),
-                      borderRadius: const BorderRadius.all(Radius.circular(15)),
-                      border: Border.all(color: Colors.white, width: 2),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color.fromARGB(80, 0, 0, 0),
-                          blurRadius: 2.0,
-                        ),
-                      ]),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20),
-                        child: Center(
-                          child: Text(
-                            username,
-                            style: const TextStyle(
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 5),
+          child: Stack(alignment: Alignment.bottomCenter, children: [
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 1.0),
+                  child: Container(
+                    height: maxheight * 0.16,
+                    width: maxwidth * 0.95,
+                    decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 229, 245, 234),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(15)),
+                        border: Border.all(color: Colors.white, width: 2),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color.fromARGB(80, 0, 0, 0),
+                            blurRadius: 2.0,
                           ),
+                        ]),
+                    child: Stack(
+                      alignment: AlignmentDirectional.topEnd,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 30),
+                              child: Center(
+                                child: Text(username,
+                                    style: GoogleFonts.aboreto(
+                                      textStyle: const TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 3),
+                                    )),
+                              ),
+                            ),
+                            const Spacer(),
+
+                            //ALLOW THE USER TO CHECK THE COLOR OF EACH EMOTION.
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    myContainer(happyColor, "😊"),
+                                    myContainer(calmColor, "😴"),
+                                    myContainer(cryingColor, "😭"),
+                                    myContainer(angryColor, "😡"),
+                                    myContainer(badColor, "😞"),
+                                    myContainer(lovedColor, "🥰"),
+                                    myContainer(sickColor, "🤒"),
+                                    myContainer(unasignedColor, "😐")
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      const Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              myContainer(happyColor, "😊"),
-                              myContainer(calmColor, "😴"),
-                              myContainer(cryingColor, "😭"),
-                              myContainer(angryColor, "😡"),
-                              myContainer(badColor, "😞"),
-                              myContainer(lovedColor, "🥰"),
-                              myContainer(sickColor, "🤒"),
-                              myContainer(unasignedColor, "😐")
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+                        //THE FOLLOWING ICONBUTTON NAVIGATES TO THE CURRENT DATE IN THE LISTVIEW
+                        IconButton(
+                            onPressed: () {
+                              CalendarController controller =
+                                  CalendarController();
+                              int index = (DateTime.now().month - 1) * 2;
+
+                              myCalendar.itemScrollController.scrollTo(
+                                  index: index,
+                                  duration: const Duration(seconds: 1),
+                                  curve: Curves.easeInOutCubic);
+                            },
+                            icon: const Icon(
+                              Icons.replay_rounded,
+                            ))
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              const Spacer(),
-              const CalendarView(
-                  myBackgroundColor, myDotsColor, myMonthColor, 200),
-              Center(
-                child: SizedBox(
-                    height: maxheight * 0.35,
-                    child: Image.asset("assets/reading-side.png")),
-              ),
-            ],
-          ),
+                const Spacer(),
+                myCalendar,
+                Center(
+                  child: SizedBox(
+                      height: maxheight * 0.40,
+                      child: Image.asset("assets/MoodBG2.png")),
+                ),
+              ],
+            ),
+            const Icon(
+              Icons.arrow_downward_rounded,
+              color: containerColor,
+              size: 25,
+            ),
+          ]),
         ));
   }
 

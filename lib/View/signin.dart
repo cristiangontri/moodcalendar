@@ -14,7 +14,7 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   List<String> images = ["assets/moodTitle2.png", "assets/moodTutorial.png"];
   TextEditingController myTextController = TextEditingController();
-  bool chosen = false;
+  int chosen = 0;
   @override
   Widget build(BuildContext context) {
     var maxheight = (MediaQuery.of(context).size.height);
@@ -32,6 +32,11 @@ class _SignInState extends State<SignIn> {
                   child: SizedBox(
                     height: maxheight * 0.41,
                     child: PageView.builder(
+                        onPageChanged: (value) {
+                          setState(() {
+                            chosen = value;
+                          });
+                        },
                         itemCount: images.length,
                         pageSnapping: true,
                         itemBuilder: (context, pagePosition) {
@@ -43,12 +48,28 @@ class _SignInState extends State<SignIn> {
                 ),
                 Center(
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
                         height: 10,
                         width: 10,
-                        decoration: const BoxDecoration(
-                            color: Colors.teal,
+                        decoration: BoxDecoration(
+                            color: (chosen == 0)
+                                ? Colors.teal
+                                : Color.fromARGB(108, 0, 92, 82),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(15))),
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Container(
+                        height: 10,
+                        width: 10,
+                        decoration: BoxDecoration(
+                            color: (chosen == 1)
+                                ? Colors.teal
+                                : Color.fromARGB(108, 0, 92, 82),
                             borderRadius:
                                 BorderRadius.all(Radius.circular(15))),
                       )

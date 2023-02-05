@@ -3,6 +3,7 @@ import 'package:emotionscalendar/View/colors.dart';
 import 'package:emotionscalendar/db/datedao.dart';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../Model/emotion.dart';
 
@@ -197,7 +198,11 @@ class _DayViewState extends State<DayView> {
                                 )
                               ],
                             ),
-                            Text(widget.date.getDay().toString()),
+                            Text(widget.date.getDay().toString(),
+                                style: GoogleFonts.aboreto(
+                                  textStyle: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                )),
                           ])),
                 ),
                 Container(
@@ -260,7 +265,8 @@ class _DayViewState extends State<DayView> {
                             )
                           ],
                         ),
-                        Text(widget.date.getDay().toString())
+                        Text(widget.date.getDay().toString(),
+                            style: GoogleFonts.aboreto())
                       ])),
             ),
             Container(

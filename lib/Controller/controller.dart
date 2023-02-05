@@ -2,6 +2,7 @@ import 'package:emotionscalendar/Model/calendar.dart';
 import 'package:emotionscalendar/db/datedao.dart';
 import 'package:emotionscalendar/Model/emotion.dart';
 import 'package:provider/provider.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class CalendarController {
   //HANDLES THE COMUNICATION BETWEEN THE MODEL AND THE VIEWS
