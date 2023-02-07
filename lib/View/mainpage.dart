@@ -12,7 +12,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  var pages = [Home(), StatsView()];
+  var pages = [const Home(), const StatsView()];
 
   @override
   Widget build(BuildContext context) {

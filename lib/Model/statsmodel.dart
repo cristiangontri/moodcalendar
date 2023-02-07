@@ -3,14 +3,14 @@ import 'package:emotionscalendar/db/datedao.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class Stats {
-  late int _happyDays;
-  late int _cryingDays;
-  late int _calmDays;
-  late int _angryDays;
-  late int _sickDays;
-  late int _neutralDays;
-  late int _lovedDays;
-  late int _badDays;
+  int _happyDays = 0;
+  int _cryingDays = 0;
+  int _calmDays = 0;
+  int _angryDays = 0;
+  int _sickDays = 0;
+  int _neutralDays = 0;
+  int _lovedDays = 0;
+  int _badDays = 0;
 
   Stats() {
     update();

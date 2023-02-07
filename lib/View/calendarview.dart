@@ -440,12 +440,3 @@ class _CalendarViewState extends State<CalendarView> {
         ));
   }
 }
-
-class MyBehavior extends ScrollBehavior {
-  //HIDES SCROLL GLOW
-  @override
-  Widget buildOverscrollIndicator(
-      BuildContext context, Widget child, ScrollableDetails details) {
-    return child;
-  }
-}

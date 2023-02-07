@@ -73,7 +73,9 @@ class _DayViewState extends State<DayView> {
     var maxwidth = (MediaQuery.of(context).size.width);
     bool popupshowing = false;
 
-    return CalendarController().getCurrentDate(context).isequal(widget.date)
+    return CalendarController()
+            .getCurrentDate(context)
+            .isequal(widget.date) //IF IT'S THE CURRENT DATE:
         ? GestureDetector(
             onTapDown: getPosition,
             onLongPress: () => showMenu(
@@ -169,7 +171,9 @@ class _DayViewState extends State<DayView> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 5, top: 5),
-                  child: Container(
+                  child: AnimatedContainer(
+                      //ANIMATE COLOR CHANGE ON CURRENT DATE.
+                      duration: const Duration(milliseconds: 800),
                       width: 35,
                       height: 35,
                       decoration: BoxDecoration(
@@ -229,7 +233,9 @@ class _DayViewState extends State<DayView> {
                 )
               ],
             ))
-        : Stack(alignment: Alignment.topRight, fit: StackFit.loose, children: [
+        :
+        //IF IT'S NOT THE CURRENT DATE:
+        Stack(alignment: Alignment.topRight, fit: StackFit.loose, children: [
             const SizedBox(
               height: 45,
               width: 45,

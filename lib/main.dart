@@ -1,7 +1,7 @@
 import 'dart:io';
-import 'dart:ui';
 import 'package:emotionscalendar/Controller/controller.dart';
 import 'package:emotionscalendar/Model/calendar.dart';
+import 'package:emotionscalendar/View/infoview.dart';
 import 'package:emotionscalendar/View/mainpage.dart';
 import 'package:emotionscalendar/View/signin.dart';
 import 'package:emotionscalendar/db/datedao.dart';
@@ -132,6 +132,7 @@ class _HomeState extends State<Home> {
                                 child: Text(username,
                                     style: GoogleFonts.aboreto(
                                       textStyle: const TextStyle(
+                                          color: Colors.teal,
                                           fontSize: 30,
                                           fontWeight: FontWeight.bold,
                                           letterSpacing: 3),
@@ -163,20 +164,37 @@ class _HomeState extends State<Home> {
                           ],
                         ),
                         //THE FOLLOWING ICONBUTTON NAVIGATES TO THE CURRENT DATE IN THE LISTVIEW
-                        IconButton(
-                            onPressed: () {
-                              CalendarController controller =
-                                  CalendarController();
-                              int index = (DateTime.now().month - 1) * 2;
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const InfoView()),
+                                );
+                              },
+                              icon: const Icon(
+                                Icons.info_outline_rounded,
+                                color: myBackgroundColor,
+                              ),
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  int index = (DateTime.now().month - 1) * 2;
 
-                              myCalendar.itemScrollController.scrollTo(
-                                  index: index,
-                                  duration: const Duration(seconds: 1),
-                                  curve: Curves.easeInOutCubic);
-                            },
-                            icon: const Icon(
-                              Icons.replay_rounded,
-                            ))
+                                  myCalendar.itemScrollController.scrollTo(
+                                      index: index,
+                                      duration: const Duration(seconds: 1),
+                                      curve: Curves.easeInOutCubic);
+                                },
+                                icon: const Icon(
+                                  Icons.replay_rounded,
+                                  color: myBackgroundColor,
+                                )),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -200,6 +218,7 @@ class _HomeState extends State<Home> {
   }
 
   Widget myContainer(Color bg, String emoji) {
+    //CUSTOM APPBAR / BANNER:
     return Container(
         width: 35,
         height: 35,

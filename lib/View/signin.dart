@@ -56,9 +56,9 @@ class _SignInState extends State<SignIn> {
                         decoration: BoxDecoration(
                             color: (chosen == 0)
                                 ? Colors.teal
-                                : Color.fromARGB(108, 0, 92, 82),
+                                : const Color.fromARGB(108, 0, 92, 82),
                             borderRadius:
-                                BorderRadius.all(Radius.circular(15))),
+                                const BorderRadius.all(Radius.circular(15))),
                       ),
                       const SizedBox(
                         width: 5,
@@ -69,9 +69,9 @@ class _SignInState extends State<SignIn> {
                         decoration: BoxDecoration(
                             color: (chosen == 1)
                                 ? Colors.teal
-                                : Color.fromARGB(108, 0, 92, 82),
+                                : const Color.fromARGB(108, 0, 92, 82),
                             borderRadius:
-                                BorderRadius.all(Radius.circular(15))),
+                                const BorderRadius.all(Radius.circular(15))),
                       )
                     ],
                   ),
