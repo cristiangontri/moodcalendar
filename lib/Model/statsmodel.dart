@@ -1,8 +1,10 @@
+import 'package:emotionscalendar/Controller/controller.dart';
 import 'package:emotionscalendar/Model/emotion.dart';
 import 'package:emotionscalendar/db/datedao.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class Stats {
+  String year = "";
   int _happyDays = 0;
   int _cryingDays = 0;
   int _calmDays = 0;
@@ -12,12 +14,14 @@ class Stats {
   int _lovedDays = 0;
   int _badDays = 0;
 
-  Stats() {
+  Stats(context) {
+    var controller = CalendarController();
+    year = controller.getRenderedYear(context);
     update();
   }
 
   void update() {
-    Box dates = Hive.box("Dates");
+    Box dates = Hive.box(year);
     _happyDays = dates.values
         .where((element) =>
             (element as DateDao).getEmotion() == Emotion.happy.getName())
@@ -89,5 +93,13 @@ class Stats {
 
   int getCalmDays() {
     return _calmDays;
+  }
+
+  String getYear() {
+    return year;
+  }
+
+  void setYear(String y) {
+    year = y;
   }
 }

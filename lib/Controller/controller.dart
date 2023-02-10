@@ -25,4 +25,16 @@ class CalendarController {
   void setSelectedDate(context, DateDao d) {
     Provider.of<Calendar>(context, listen: false).setSelectedDate(d);
   }
+
+  String getRenderedYear(context) {
+    return Provider.of<Calendar>(context).getRenderedYear();
+  }
+
+  void previousRenderedYear(context) {
+    Provider.of<Calendar>(context, listen: false).previousRenderedYear();
+  }
+
+  void nextRenderedYear(context) {
+    Provider.of<Calendar>(context, listen: false).nextRenderedYear();
+  }
 }

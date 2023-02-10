@@ -1,5 +1,6 @@
 import 'package:emotionscalendar/db/datedao.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'emotion.dart';
 
 class Calendar extends ChangeNotifier {
@@ -7,11 +8,32 @@ class Calendar extends ChangeNotifier {
 
   DateDao _currentDate;
   DateDao _selectedDate;
+  late int _renderedYear;
 
-  Calendar(this._currentDate, this._selectedDate);
+  Calendar(this._currentDate, this._selectedDate) {
+    _renderedYear = _currentDate.getYear();
+  }
 
   DateDao getCurrentDate() {
     return _currentDate;
+  }
+
+  String getRenderedYear() {
+    return _renderedYear.toString();
+  }
+
+  void nextRenderedYear() async {
+    if (_renderedYear != DateTime.now().year) {
+      _renderedYear++;
+      await Hive.openBox(_renderedYear.toString());
+      notifyListeners();
+    }
+  }
+
+  void previousRenderedYear() async {
+    _renderedYear--;
+    await Hive.openBox(_renderedYear.toString());
+    notifyListeners();
   }
 
   void setCurrentDate(DateDao d) {

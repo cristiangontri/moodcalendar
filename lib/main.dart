@@ -31,10 +31,12 @@ Future<void> main() async {
   //INIT HIVE:
   await Hive.initFlutter(appDocPath);
   Hive.registerAdapter(DateDaoAdapter());
-  Box box = await Hive.openBox('Dates');
+  DateTime now = DateTime.now();
+  String year = now.year.toString();
+  Box box = await Hive.openBox(year);
   Box userBox = await Hive.openBox('User');
   //GET CURRENT DAY:
-  DateTime now = DateTime.now();
+
   int yearDay = DayYearCalculator(now).toYearDay();
   //SET APP STATE:
   if (box.length == 0) {
@@ -64,7 +66,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DateDao currentDate = Hive.box("Dates").getAt(Hive.box("Dates").length - 1);
+    String year = DateTime.now().year.toString();
+    DateDao currentDate = Hive.box(year).getAt(Hive.box(year).length - 1);
     Box userBox = Hive.box("User");
     return MultiProvider(
         //START CALENDAR PROVIDER
@@ -78,7 +81,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.teal,
           ),
-          home: userBox.length == 0 ? SignIn() : MainPage(),
+          home: userBox.length == 0 ? SignIn() : const MainPage(),
         ));
   }
 }
@@ -97,6 +100,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     var maxheight = (MediaQuery.of(context).size.height);
     var maxwidth = (MediaQuery.of(context).size.width);
+    var controller = CalendarController();
     String username = Hive.box("User").getAt(Hive.box("User").length - 1);
     return Scaffold(
         backgroundColor: myBackgroundColor,
@@ -121,31 +125,32 @@ class _HomeState extends State<Home> {
                           ),
                         ]),
                     child: Stack(
-                      alignment: AlignmentDirectional.topEnd,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 30),
-                              child: Center(
-                                child: Text(username,
-                                    style: GoogleFonts.aboreto(
-                                      textStyle: const TextStyle(
-                                          color: Colors.teal,
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 3),
-                                    )),
-                              ),
-                            ),
-                            const Spacer(),
+                        alignment: AlignmentDirectional.bottomEnd,
+                        children: [
+                          Stack(
+                            alignment: AlignmentDirectional.topEnd,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 40),
+                                    child: Center(
+                                      child: Text(username,
+                                          style: GoogleFonts.aboreto(
+                                            textStyle: const TextStyle(
+                                                color: Colors.teal,
+                                                fontSize: 30,
+                                                fontWeight: FontWeight.bold,
+                                                letterSpacing: 3),
+                                          )),
+                                    ),
+                                  ),
+                                  const Spacer(),
 
-                            //ALLOW THE USER TO CHECK THE COLOR OF EACH EMOTION.
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Center(
-                                child: Row(
+                                  //ALLOW THE USER TO CHECK THE COLOR OF EACH EMOTION.
+                                  Center(
+                                      child: /*Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
@@ -158,45 +163,83 @@ class _HomeState extends State<Home> {
                                     myContainer(sickColor, "🤒"),
                                     myContainer(unasignedColor, "😐")
                                   ],
-                                ),
+                                ),*/
+                                          Text(
+                                    "---${controller.getRenderedYear(context)}---",
+                                    style: GoogleFonts.aboreto(
+                                      textStyle: const TextStyle(
+                                        color: badColor,
+                                        fontSize: 30,
+                                        letterSpacing: 3,
+                                      ),
+                                    ),
+                                  )),
+                                  const Spacer(),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-                        //THE FOLLOWING ICONBUTTON NAVIGATES TO THE CURRENT DATE IN THE LISTVIEW
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const InfoView()),
-                                );
-                              },
-                              icon: const Icon(
-                                Icons.info_outline_rounded,
-                                color: myBackgroundColor,
-                              ),
-                            ),
-                            IconButton(
-                                onPressed: () {
-                                  int index = (DateTime.now().month - 1) * 2;
+                              //THE FOLLOWING ICONBUTTON NAVIGATES TO THE CURRENT DATE IN THE LISTVIEW
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const InfoView()),
+                                      );
+                                    },
+                                    icon: const Icon(
+                                      Icons.info_outline_rounded,
+                                      color: myBackgroundColor,
+                                    ),
+                                  ),
+                                  IconButton(
+                                      onPressed: () {
+                                        int index =
+                                            (DateTime.now().month - 1) * 2;
 
-                                  myCalendar.itemScrollController.scrollTo(
-                                      index: index,
-                                      duration: const Duration(seconds: 1),
-                                      curve: Curves.easeInOutCubic);
+                                        myCalendar.itemScrollController
+                                            .scrollTo(
+                                                index: index,
+                                                duration:
+                                                    const Duration(seconds: 1),
+                                                curve: Curves.easeInOutCubic);
+                                      },
+                                      icon: const Icon(
+                                        Icons.replay_rounded,
+                                        color: myBackgroundColor,
+                                      )),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  controller.previousRenderedYear(context);
                                 },
                                 icon: const Icon(
-                                  Icons.replay_rounded,
+                                  Icons.arrow_left_rounded,
                                   color: myBackgroundColor,
-                                )),
-                          ],
-                        ),
-                      ],
-                    ),
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  controller.nextRenderedYear(context);
+                                },
+                                icon: const Icon(
+                                  Icons.arrow_right_rounded,
+                                  color: myBackgroundColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ]),
                   ),
                 ),
                 const Spacer(),

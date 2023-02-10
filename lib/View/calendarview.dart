@@ -30,7 +30,8 @@ class _CalendarViewState extends State<CalendarView> {
   @override
   void initState() {
     super.initState();
-    box = Hive.box("Dates");
+
+    box = Hive.box(DateTime.now().year.toString());
   }
 
   //IN ORDER TO NOT DUPLICATE CODE, I HAVE CREATED THE FOLOWING FUNCTION WHICH
@@ -106,6 +107,7 @@ class _CalendarViewState extends State<CalendarView> {
   @override
   Widget build(BuildContext context) {
     CalendarController controller = CalendarController();
+    box = Hive.box(controller.getRenderedYear(context));
 
     var maxwidth = (MediaQuery.of(context).size.width);
     var maxheight = (MediaQuery.of(context).size.height);
@@ -422,8 +424,8 @@ class _CalendarViewState extends State<CalendarView> {
         clipBehavior: Clip.hardEdge,
         width: maxwidth,
         height: maxheight * 0.40,
-        decoration: BoxDecoration(
-          color: widget.backgroundColor,
+        decoration: const BoxDecoration(
+          color: Colors.transparent,
         ),
         child: ScrollablePositionedList.builder(
           //THIS WIDGET ALLOWS TO SCROLL TO AN INDEX.

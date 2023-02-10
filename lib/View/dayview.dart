@@ -70,8 +70,6 @@ class _DayViewState extends State<DayView> {
   @override
   Widget build(BuildContext context) {
     overlay = Overlay.of(context).context.findRenderObject()! as RenderBox;
-    var maxwidth = (MediaQuery.of(context).size.width);
-    bool popupshowing = false;
 
     return CalendarController()
             .getCurrentDate(context)
@@ -81,16 +79,18 @@ class _DayViewState extends State<DayView> {
             onLongPress: () => showMenu(
                     context: context,
                     position: relRectSize,
+                    color: const Color.fromARGB(255, 229, 245, 234),
                     shape: const RoundedRectangleBorder(
+                        side: BorderSide(color: Colors.white, width: 2),
                         borderRadius: BorderRadius.all(
-                      Radius.circular(20.0),
-                    )),
+                          Radius.circular(20.0),
+                        )),
                     items: [
                       PopupMenuItem(
                           height: 150,
                           child: Center(
                             child: SizedBox(
-                              height: 125,
+                              height: 110,
                               width: 250,
                               child: Center(
                                 child: GridView.count(
@@ -105,57 +105,52 @@ class _DayViewState extends State<DayView> {
                                             .changeEmotion(
                                                 Emotion.happy, context),
                                         value: Emotion.happy,
-                                        child: const Center(child: Text("😊")),
+                                        child: myContainer(happyColor, "😊"),
                                       ),
                                       PopupMenuItem(
                                           onTap: () => CalendarController()
                                               .changeEmotion(
                                                   Emotion.calm, context),
                                           value: Emotion.calm,
-                                          child:
-                                              const Center(child: Text("😴"))),
+                                          child: myContainer(calmColor, "😴")),
                                       PopupMenuItem(
                                           onTap: () => CalendarController()
                                               .changeEmotion(
                                                   Emotion.crying, context),
                                           value: Emotion.crying,
                                           child:
-                                              const Center(child: Text("😭"))),
+                                              myContainer(cryingColor, "😭")),
                                       PopupMenuItem(
                                           onTap: () => CalendarController()
                                               .changeEmotion(
                                                   Emotion.angry, context),
                                           value: Emotion.angry,
-                                          child:
-                                              const Center(child: Text("😡"))),
+                                          child: myContainer(angryColor, "😡")),
                                       PopupMenuItem(
                                           onTap: () => CalendarController()
                                               .changeEmotion(
                                                   Emotion.bad, context),
                                           value: Emotion.bad,
-                                          child:
-                                              const Center(child: Text("😞"))),
+                                          child: myContainer(badColor, "😞")),
                                       PopupMenuItem(
                                           onTap: () => CalendarController()
                                               .changeEmotion(
                                                   Emotion.loved, context),
                                           value: Emotion.loved,
-                                          child:
-                                              const Center(child: Text("🥰"))),
+                                          child: myContainer(lovedColor, "🥰")),
                                       PopupMenuItem(
                                           onTap: () => CalendarController()
                                               .changeEmotion(
                                                   Emotion.sick, context),
                                           value: Emotion.sick,
-                                          child:
-                                              const Center(child: Text("🤒"))),
+                                          child: myContainer(sickColor, "🤒")),
                                       PopupMenuItem(
                                           onTap: () => CalendarController()
                                               .changeEmotion(
                                                   Emotion.unassigned, context),
                                           value: Emotion.unassigned,
                                           child:
-                                              const Center(child: Text("😐")))
+                                              myContainer(unasignedColor, "😐"))
                                     ]),
                               ),
                             ),
@@ -204,7 +199,11 @@ class _DayViewState extends State<DayView> {
                             ),
                             Text(widget.date.getDay().toString(),
                                 style: GoogleFonts.aboreto(
-                                  textStyle: const TextStyle(
+                                  textStyle: TextStyle(
+                                      color: widget.emotionColor == badColor ||
+                                              widget.emotionColor == angryColor
+                                          ? Colors.white
+                                          : Colors.black,
                                       fontWeight: FontWeight.bold),
                                 )),
                           ])),
@@ -305,5 +304,23 @@ class _DayViewState extends State<DayView> {
   // ↓ get the tap position Offset
   void getPosition(TapDownDetails detail) {
     tapXY = detail.globalPosition;
+  }
+
+  Widget myContainer(Color bg, String emoji) {
+    //CUSTOM APPBAR / BANNER:
+    return Container(
+        width: 30,
+        height: 30,
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.white, width: 2),
+            color: bg,
+            borderRadius: BorderRadius.circular(10)),
+        child:
+            Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+          Text(
+            emoji,
+            style: const TextStyle(fontSize: 18),
+          )
+        ]));
   }
 }
