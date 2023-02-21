@@ -78,7 +78,8 @@ class InfoView extends StatelessWidget {
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold)),
                                     TextSpan(
-                                        text: " The purpose of it is to make it easier for people " +
+                                        text:
+                                            " The purpose of it is to make it easier for people "
                                             "to detect issues related to mental health by monitoring their mood.")
                                   ]),
                             ),
@@ -152,7 +153,8 @@ class InfoView extends StatelessWidget {
                                         text:
                                             "As I mentioned before, I am not aiming to make money with this project, "),
                                     TextSpan(
-                                        text: "but, if you want to contribute to my future projects, theres a button down this paragraph " +
+                                        text:
+                                            "but, if you want to contribute to my future projects, theres a button down this paragraph "
                                             "that will allow you to donate the amount of money you want."),
                                   ]),
                             ),

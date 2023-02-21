@@ -69,13 +69,15 @@ class _MyCardState extends State<MyCard> {
                 : Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.all(10.0),
+                        padding: const EdgeInsets.only(
+                            top: 20.0, left: 10, right: 10),
                         child: TextFormField(
+                          textAlign: TextAlign.center,
                           maxLength: 15,
                           controller: widget.myTextController,
                           style: GoogleFonts.aboreto(
                               textStyle: const TextStyle(
-                                  color: Colors.teal, fontSize: 25)),
+                                  color: Colors.teal, fontSize: 30)),
                           decoration: InputDecoration(
                               labelText: "Your Name Please",
                               labelStyle: const TextStyle(color: Colors.teal),
@@ -98,7 +100,11 @@ class _MyCardState extends State<MyCard> {
                                   borderRadius: BorderRadius.circular(15))),
                         ),
                       ),
+                      const Spacer(),
                       Image.asset(widget.img),
+                      const Spacer(
+                        flex: 2,
+                      )
                     ],
                   ),
       ),

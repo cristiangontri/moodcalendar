@@ -1,5 +1,6 @@
 import 'package:emotionscalendar/Controller/controller.dart';
 import 'package:emotionscalendar/View/colors.dart';
+import 'package:emotionscalendar/View/managedate.dart';
 import 'package:emotionscalendar/db/datedao.dart';
 
 import 'package:flutter/material.dart';
@@ -76,6 +77,13 @@ class _DayViewState extends State<DayView> {
             .isequal(widget.date) //IF IT'S THE CURRENT DATE:
         ? GestureDetector(
             onTapDown: getPosition,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ManageDate(widget.date)),
+              );
+            },
             onLongPress: () => showMenu(
                     context: context,
                     position: relRectSize,
@@ -154,7 +162,49 @@ class _DayViewState extends State<DayView> {
                                     ]),
                               ),
                             ),
-                          ))
+                          )),
+                      PopupMenuItem(
+                          child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ManageDate(widget.date)),
+                          );
+                        },
+                        child: Container(
+                          width: 250,
+                          height: widget.date.getNote().length < 25
+                              ? 60
+                              : widget.date.getNote().length < 100
+                                  ? 100
+                                  : 200,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.teal, width: 1),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          alignment: Alignment.center,
+                          child: ListView(
+                              padding: const EdgeInsets.only(
+                                  top: 10, left: 5, right: 5),
+                              children: [
+                                Text(
+                                  widget.date.getNote() != ""
+                                      ? widget.date.getNote()
+                                      : "No notes... (Press here to add a note).",
+                                  textAlign: widget.date.getNote().length < 25
+                                      ? TextAlign.center
+                                      : TextAlign.center,
+                                  style: GoogleFonts.aboreto(
+                                      textStyle: const TextStyle(
+                                    color: Colors.teal,
+                                    fontWeight: FontWeight.bold,
+                                  )),
+                                ),
+                              ]),
+                        ),
+                      ))
                     ]),
             child: Stack(
               alignment: Alignment.topRight,
@@ -234,68 +284,126 @@ class _DayViewState extends State<DayView> {
             ))
         :
         //IF IT'S NOT THE CURRENT DATE:
-        Stack(alignment: Alignment.topRight, fit: StackFit.loose, children: [
-            const SizedBox(
-              height: 45,
-              width: 45,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 5, top: 5),
-              child: Container(
-                  width: 35,
-                  height: 35,
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white, width: 2),
-                      color: widget.emotionColor,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Container(
-                              height: 6,
-                              width: 6,
-                              decoration: BoxDecoration(
-                                  color: widget.dotsColor,
-                                  borderRadius: BorderRadius.circular(20)),
-                            ),
-                            Container(
-                              height: 6,
-                              width: 6,
-                              decoration: BoxDecoration(
-                                  color: widget.dotsColor,
-                                  borderRadius: BorderRadius.circular(20)),
-                            )
-                          ],
+        GestureDetector(
+            onTapDown: getPosition,
+            onLongPress: () => showMenu(
+                context: context,
+                position: relRectSize,
+                color: const Color.fromARGB(255, 229, 245, 234),
+                shape: const RoundedRectangleBorder(
+                    side: BorderSide(color: Colors.white, width: 2),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20.0),
+                    )),
+                items: [
+                  PopupMenuItem(
+                      padding: const EdgeInsets.all(15),
+                      child: Container(
+                        width: 250,
+                        height: widget.date.getNote() == ""
+                            ? 0
+                            : widget.date.getNote().length < 25
+                                ? 30
+                                : widget.date.getNote().length < 100
+                                    ? 100
+                                    : 200,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.teal, width: 1),
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                        Text(widget.date.getDay().toString(),
-                            style: GoogleFonts.aboreto())
-                      ])),
-            ),
-            Container(
-              height: 18,
-              width: 18,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: const BorderRadius.all(Radius.circular(15)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
-                    spreadRadius: 0.1,
-                    blurRadius: 0.7,
-                    offset: const Offset(0, 3), // changes position of shadow
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.only(top: 10, left: 5, right: 5),
+                          child: ListView(children: [
+                            Text(
+                              widget.date.getNote() != ""
+                                  ? widget.date.getNote()
+                                  : "",
+                              textAlign: widget.date.getNote().length < 25
+                                  ? TextAlign.center
+                                  : TextAlign.start,
+                              style: GoogleFonts.aboreto(
+                                  textStyle: const TextStyle(
+                                color: Colors.teal,
+                                fontWeight: FontWeight.bold,
+                              )),
+                            ),
+                          ]),
+                        ),
+                      ))
+                ]),
+            child: Stack(
+                alignment: Alignment.topRight,
+                fit: StackFit.loose,
+                children: [
+                  const SizedBox(
+                    height: 45,
+                    width: 45,
                   ),
-                ],
-              ),
-              child: Text(
-                widget.emoji,
-                textAlign: TextAlign.center,
-              ),
-            )
-          ]);
+                  Padding(
+                    padding: const EdgeInsets.only(right: 5, top: 5),
+                    child: Container(
+                        width: 35,
+                        height: 35,
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white, width: 2),
+                            color: widget.emotionColor,
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Container(
+                                    height: 6,
+                                    width: 6,
+                                    decoration: BoxDecoration(
+                                        color: widget.dotsColor,
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                  ),
+                                  Container(
+                                    height: 6,
+                                    width: 6,
+                                    decoration: BoxDecoration(
+                                        color: widget.dotsColor,
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                  )
+                                ],
+                              ),
+                              Text(widget.date.getDay().toString(),
+                                  style: GoogleFonts.aboreto())
+                            ])),
+                  ),
+                  Container(
+                    height: 18,
+                    width: 18,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: const BorderRadius.all(Radius.circular(15)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          spreadRadius: 0.1,
+                          blurRadius: 0.7,
+                          offset:
+                              const Offset(0, 3), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      widget.emoji,
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                ]),
+          );
   }
 
   RelativeRect get relRectSize =>

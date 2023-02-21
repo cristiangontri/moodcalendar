@@ -1,6 +1,6 @@
 import 'package:emotionscalendar/View/cardview.dart';
 import 'package:emotionscalendar/View/mainpage.dart';
-import 'package:emotionscalendar/main.dart';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
@@ -8,7 +8,7 @@ import 'package:hive/hive.dart';
 import 'colors.dart';
 
 class SignIn extends StatefulWidget {
-  SignIn({Key? key}) : super(key: key);
+  const SignIn({Key? key}) : super(key: key);
 
   @override
   State<SignIn> createState() => _SignInState();

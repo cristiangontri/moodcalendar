@@ -27,6 +27,7 @@ class Calendar extends ChangeNotifier {
       _renderedYear++;
       await Hive.openBox(_renderedYear.toString());
       notifyListeners();
+      await Hive.box((_renderedYear - 1).toString()).close();
     }
   }
 
@@ -54,6 +55,12 @@ class Calendar extends ChangeNotifier {
 
   void setSelectedDate(DateDao d) {
     _selectedDate = d;
+    notifyListeners();
+  }
+
+  void addNote(String note) {
+    _selectedDate.addNote(note);
+    _selectedDate.save();
     notifyListeners();
   }
 }

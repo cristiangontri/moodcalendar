@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:emotionscalendar/Controller/controller.dart';
 import 'package:emotionscalendar/Model/calendar.dart';
+import 'package:emotionscalendar/Model/notification_service.dart';
 import 'package:emotionscalendar/View/infoview.dart';
 import 'package:emotionscalendar/View/mainpage.dart';
 import 'package:emotionscalendar/View/signin.dart';
@@ -11,10 +12,15 @@ import 'package:emotionscalendar/View/calendarview.dart';
 import 'package:emotionscalendar/View/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
+
 import 'package:provider/provider.dart';
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 Future<void> main() async {
   //STATUSBAR COLOR:
@@ -25,6 +31,12 @@ Future<void> main() async {
 
   //STORAGE DIRECTORY:
   WidgetsFlutterBinding.ensureInitialized();
+  NotificationService().initNotification();
+
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   Directory appDocDir = await getApplicationDocumentsDirectory();
   String appDocPath = appDocDir.path;
@@ -34,7 +46,7 @@ Future<void> main() async {
   DateTime now = DateTime.now();
   String year = now.year.toString();
   Box box = await Hive.openBox(year);
-  Box userBox = await Hive.openBox('User');
+  await Hive.openBox('User');
   //GET CURRENT DAY:
 
   int yearDay = DayYearCalculator(now).toYearDay();
@@ -81,7 +93,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.teal,
           ),
-          home: userBox.length == 0 ? SignIn() : const MainPage(),
+          home: userBox.length == 0 ? const SignIn() : const MainPage(),
         ));
   }
 }
@@ -96,6 +108,12 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   CalendarView myCalendar =
       CalendarView(myBackgroundColor, myDotsColor, myMonthColor, 200);
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     var maxheight = (MediaQuery.of(context).size.height);
@@ -103,6 +121,7 @@ class _HomeState extends State<Home> {
     var controller = CalendarController();
     String username = Hive.box("User").getAt(Hive.box("User").length - 1);
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: myBackgroundColor,
         body: SafeArea(
           child: Stack(alignment: Alignment.bottomCenter, children: [
@@ -198,6 +217,8 @@ class _HomeState extends State<Home> {
                                   ),
                                   IconButton(
                                       onPressed: () {
+                                        NotificationService()
+                                            .showNotification();
                                         int index =
                                             (DateTime.now().month - 1) * 2;
 

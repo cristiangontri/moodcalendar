@@ -19,6 +19,7 @@ class _MainPageState extends State<MainPage> {
     var maxheight = (MediaQuery.of(context).size.height);
     var maxwidth = (MediaQuery.of(context).size.width);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: myBackgroundColor,
       body: SafeArea(
           child: SizedBox(

@@ -1,4 +1,3 @@
-import 'package:emotionscalendar/Controller/controller.dart';
 import 'package:emotionscalendar/Model/statsmodel.dart';
 import 'package:emotionscalendar/View/colors.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +9,6 @@ class StatsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var controller = CalendarController();
     Stats myStats = Stats(context);
     final List<ChartData> chartData = [
       ChartData("😊", myStats.getHappyDays()),
