@@ -175,7 +175,7 @@ class _SignInState extends State<SignIn> {
                     onPressed: myTextController.text.isNotEmpty
                         ? () {
                             Box userBox = Hive.box("User");
-                            userBox.add(myTextController.text);
+                            userBox.put(0, myTextController.text);
                             Navigator.push(
                               context,
                               MaterialPageRoute(

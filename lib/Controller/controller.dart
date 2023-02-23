@@ -1,4 +1,5 @@
 import 'package:emotionscalendar/Model/calendar.dart';
+import 'package:emotionscalendar/Model/settingsmodel.dart';
 import 'package:emotionscalendar/db/datedao.dart';
 import 'package:emotionscalendar/Model/emotion.dart';
 import 'package:provider/provider.dart';
@@ -39,5 +40,27 @@ class CalendarController {
 
   void addNote(context, String note) {
     Provider.of<Calendar>(context, listen: false).addNote(note);
+  }
+}
+
+class SettingsController {
+  String getCurrentNotificationTime(context) {
+    return Provider.of<SettingsModel>(context).getCurrentNotificationTime();
+  }
+
+  String getUserName(context) {
+    return Provider.of<SettingsModel>(context).getUserName();
+  }
+
+  void changeUserName(context, String s) {
+    Provider.of<SettingsModel>(context, listen: false).changeUserName(s);
+  }
+
+  void changeTime(context, String s) {
+    Provider.of<SettingsModel>(context, listen: false).changeTime(s);
+  }
+
+  void changeNotification(context) {
+    Provider.of<SettingsModel>(context, listen: false).changeNotifications();
   }
 }

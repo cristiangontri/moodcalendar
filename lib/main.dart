@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:emotionscalendar/Controller/controller.dart';
 import 'package:emotionscalendar/Model/calendar.dart';
 import 'package:emotionscalendar/Model/notification_service.dart';
+import 'package:emotionscalendar/Model/settingsmodel.dart';
 import 'package:emotionscalendar/View/infoview.dart';
 import 'package:emotionscalendar/View/mainpage.dart';
 import 'package:emotionscalendar/View/signin.dart';
@@ -68,6 +69,16 @@ Future<void> main() async {
       box.put(yearDay,
           DateDao(now.day, now.month, now.year, Emotion.unassigned.getName()));
     }
+
+    //Notification default time
+  }
+  Box userBox = Hive.box("User");
+  if (userBox.length != 2) {
+    await userBox.put(1, "20:00");
+    DateTime now = DateTime.now();
+    DateTime myTime = DateTime(now.year, now.month, now.day, 20, 0, 0);
+    await NotificationService().showNotification(
+        title: "Hey there!", body: "How was your day?", mytime: myTime);
   }
 
   runApp(const MyApp());
@@ -86,6 +97,7 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(
               create: (context) => Calendar(currentDate, currentDate)),
+          ChangeNotifierProvider(create: (context) => SettingsModel())
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -93,7 +105,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.teal,
           ),
-          home: userBox.length == 0 ? const SignIn() : const MainPage(),
+          home: userBox.containsKey(0) ? const MainPage() : const SignIn(),
         ));
   }
 }
@@ -119,7 +131,7 @@ class _HomeState extends State<Home> {
     var maxheight = (MediaQuery.of(context).size.height);
     var maxwidth = (MediaQuery.of(context).size.width);
     var controller = CalendarController();
-    String username = Hive.box("User").getAt(Hive.box("User").length - 1);
+    String username = SettingsController().getUserName(context);
     return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: myBackgroundColor,
@@ -206,19 +218,16 @@ class _HomeState extends State<Home> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                const InfoView()),
+                                            builder: (context) => InfoView()),
                                       );
                                     },
                                     icon: const Icon(
-                                      Icons.info_outline_rounded,
+                                      Icons.settings,
                                       color: myBackgroundColor,
                                     ),
                                   ),
                                   IconButton(
                                       onPressed: () {
-                                        NotificationService()
-                                            .showNotification();
                                         int index =
                                             (DateTime.now().month - 1) * 2;
 

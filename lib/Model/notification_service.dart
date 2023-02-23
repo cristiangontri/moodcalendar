@@ -1,4 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 /*class NotificationService {
   static Future initialize(
@@ -35,7 +39,7 @@ class NotificationService {
       FlutterLocalNotificationsPlugin();
   Future<void> initNotification() async {
     AndroidInitializationSettings initializationSettingsAndroid =
-        const AndroidInitializationSettings('playstore');
+        const AndroidInitializationSettings('noticon');
     notificationsPlugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
@@ -59,13 +63,27 @@ class NotificationService {
   notificationDetails() {
     return const NotificationDetails(
         android: AndroidNotificationDetails('channelId', 'channelName',
-            importance: Importance.max),
+            importance: Importance.max, color: Colors.teal, colorized: true),
         iOS: DarwinNotificationDetails());
   }
 
   Future showNotification(
-      {int id = 0, String? title, String? body, String? payload}) async {
-    return notificationsPlugin.show(
-        id, title, body, await notificationDetails());
+      {int id = 0,
+      String? title,
+      String? body,
+      String? payload,
+      required DateTime mytime}) async {
+    tz.initializeTimeZones();
+    tz.setLocalLocation(
+        tz.getLocation(await FlutterNativeTimezone.getLocalTimezone()));
+
+    await notificationsPlugin.zonedSchedule(id, title, body,
+        tz.TZDateTime.from(mytime, tz.local), notificationDetails(),
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        androidAllowWhileIdle: true);
+    return notificationsPlugin.periodicallyShow(
+        id, title, body, RepeatInterval.daily, await notificationDetails(),
+        androidAllowWhileIdle: true);
   }
 }
