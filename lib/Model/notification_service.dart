@@ -39,7 +39,7 @@ class NotificationService {
       FlutterLocalNotificationsPlugin();
   Future<void> initNotification() async {
     AndroidInitializationSettings initializationSettingsAndroid =
-        const AndroidInitializationSettings('noticon');
+        const AndroidInitializationSettings('notificationicon');
     notificationsPlugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
@@ -76,14 +76,18 @@ class NotificationService {
     tz.initializeTimeZones();
     tz.setLocalLocation(
         tz.getLocation(await FlutterNativeTimezone.getLocalTimezone()));
+    while (mytime.isBefore(DateTime.now())) {
+      mytime = mytime.add(const Duration(days: 1));
+    }
+    await notificationsPlugin.cancelAll();
 
-    await notificationsPlugin.zonedSchedule(id, title, body,
+    //Create a notification and schedule it to be shown on a dayly basis at the time given.
+
+    await notificationsPlugin.zonedSchedule(0, title, body,
         tz.TZDateTime.from(mytime, tz.local), notificationDetails(),
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
-        androidAllowWhileIdle: true);
-    return notificationsPlugin.periodicallyShow(
-        id, title, body, RepeatInterval.daily, await notificationDetails(),
-        androidAllowWhileIdle: true);
+        androidAllowWhileIdle: true,
+        matchDateTimeComponents: DateTimeComponents.time);
   }
 }

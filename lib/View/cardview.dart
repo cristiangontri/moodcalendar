@@ -101,7 +101,10 @@ class _MyCardState extends State<MyCard> {
                         ),
                       ),
                       const Spacer(),
-                      Image.asset(widget.img),
+                      Image.asset(
+                        widget.img,
+                        height: widget.height * 0.7,
+                      ),
                       const Spacer(
                         flex: 2,
                       )

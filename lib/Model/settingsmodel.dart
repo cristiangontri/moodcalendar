@@ -20,19 +20,17 @@ class SettingsModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void changeNotifications() async {
+  Future changeNotifications() async {
     Box uB = Hive.box(userbox);
     uB.putAt(1, notificationTime);
-    NotificationService().notificationsPlugin.cancelAll();
+
+    int hour = int.parse(notificationTime.split(":")[0]);
+
+    int minute = int.parse(notificationTime.split(":")[1]);
     DateTime now = DateTime.now();
-    DateTime myTime = DateTime(
-        now.year,
-        now.month,
-        now.day,
-        int.parse(notificationTime.split(":")[0]),
-        int.parse(notificationTime.split(":")[1]),
-        0);
-    await NotificationService().showNotification(
+    DateTime myTime = DateTime(now.year, now.month, now.day, hour, minute, 0);
+
+    NotificationService().showNotification(
         title: "Hey there!", body: "How was your day?", mytime: myTime);
   }
 

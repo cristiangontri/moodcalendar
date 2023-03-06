@@ -22,7 +22,7 @@
               />
             <meta-data
               android:name="com.google.firebase.messaging.default_notification_icon"
-              android:resource="@drawable/playstore"
+              android:resource="@drawable/notificationicon"
             />
             <meta-data
               android:name="com.google.firebase.messaging.default_notification_channel_id"

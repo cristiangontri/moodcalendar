@@ -1,4 +1,4 @@
-enum Emotion { happy, crying, calm, loved, angry, bad, sick, unassigned }
+enum Emotion { happy, crying, calm, loved, angry, bad, sick, devil, unassigned }
 
 extension EmotionExtension on Emotion {
   String getName() {
@@ -19,6 +19,32 @@ extension EmotionExtension on Emotion {
         return "UNASSIGNED";
       case Emotion.sick:
         return "SICK";
+      case Emotion.devil:
+        return "DEVIL";
+
+      default:
+        return "UNASSIGNED";
+    }
+  }
+
+  String getEmoji() {
+    switch (this) {
+      case Emotion.angry:
+        return "😡";
+      case Emotion.bad:
+        return "😵";
+      case Emotion.calm:
+        return "😎";
+      case Emotion.crying:
+        return "😭";
+      case Emotion.happy:
+        return "😄";
+      case Emotion.loved:
+        return "🥰";
+      case Emotion.devil:
+        return "😈";
+      case Emotion.sick:
+        return "🤒";
 
       default:
         return "UNASSIGNED";
@@ -43,6 +69,8 @@ extension EmotionExtension on Emotion {
         return Emotion.unassigned;
       case "SICK":
         return Emotion.sick;
+      case "DEVIL":
+        return Emotion.devil;
 
       default:
         return Emotion.unassigned;

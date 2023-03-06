@@ -1,9 +1,12 @@
 import 'package:emotionscalendar/Controller/controller.dart';
+import 'package:emotionscalendar/Model/dayyearcalculator.dart';
 import 'package:emotionscalendar/View/colors.dart';
 import 'package:emotionscalendar/View/dayview.dart';
+import 'package:emotionscalendar/db/datedao.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class CalendarView extends StatefulWidget {
@@ -34,10 +37,140 @@ class _CalendarViewState extends State<CalendarView> {
     box = Hive.box(DateTime.now().year.toString());
   }
 
+  int weekPosition(DateTime d) {
+    String dwName = DateFormat('EEEE').format(d);
+    switch (dwName) {
+      case "Monday":
+        return 0;
+      case "Tuesday":
+        return 1;
+      case "Wednesday":
+        return 2;
+      case "Thursday":
+        return 3;
+      case "Friday":
+        return 4;
+      case "Saturday":
+        return 5;
+      case "Sunday":
+        return 6;
+
+      default:
+        return 0;
+    }
+  }
+
+  Widget myWeekDays(double maxwidth) {
+    return SizedBox(
+      width: maxwidth - maxwidth * 0.14,
+      child: Row(
+        children: [
+          SizedBox(
+            width: maxwidth / 11 * 0.05,
+          ),
+          SizedBox(
+            width: maxwidth / 11,
+            child: Text("Mon",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.aboreto(
+                  textStyle: const TextStyle(
+                    color: containerColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                )),
+          ),
+          const Spacer(),
+          SizedBox(
+            width: maxwidth / 11,
+            child: Text("Tue",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.aboreto(
+                  textStyle: const TextStyle(
+                    color: containerColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                )),
+          ),
+          const Spacer(),
+          SizedBox(
+            width: maxwidth / 11,
+            child: Text("Wed",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.aboreto(
+                  textStyle: const TextStyle(
+                    color: containerColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                )),
+          ),
+          const Spacer(),
+          SizedBox(
+            width: maxwidth / 11,
+            child: Text("Thu ",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.aboreto(
+                  textStyle: const TextStyle(
+                    color: containerColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                )),
+          ),
+          const Spacer(),
+          SizedBox(
+            width: maxwidth / 11,
+            child: Text("Fri",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.aboreto(
+                  textStyle: const TextStyle(
+                    color: containerColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                )),
+          ),
+          const Spacer(),
+          SizedBox(
+            width: maxwidth / 11,
+            child: Text("Sat",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.aboreto(
+                  textStyle: const TextStyle(
+                    color: containerColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                )),
+          ),
+          const Spacer(),
+          SizedBox(
+            width: maxwidth / 11,
+            child: Text("Sun",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.aboreto(
+                  textStyle: const TextStyle(
+                    color: containerColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                )),
+          )
+        ],
+      ),
+    );
+  }
+
   //IN ORDER TO NOT DUPLICATE CODE, I HAVE CREATED THE FOLOWING FUNCTION WHICH
   //RETURNS A WIDGET (GRID WITH THE CORRESPONDING DAYS).
-  Widget myGrid(
-      int monthDays, int lastDays, double maxwidth, double maxheight) {
+  Widget myGrid(int monthDays, int lastDays, double maxwidth, double maxheight,
+      monthNumber) {
+    CalendarController controller = CalendarController();
+    DateTime firstDay = DateTime(
+        int.parse(controller.getRenderedYear(context)), monthNumber, 1);
+    int wPosition = weekPosition(firstDay);
     return SizedBox(
       width: maxwidth,
       height: maxheight,
@@ -53,50 +186,57 @@ class _CalendarViewState extends State<CalendarView> {
             childAspectRatio: 1 / 1,
             shrinkWrap: true,
             children: List.generate(
-              monthDays,
-              (index) => Center(
-                child: box.get(index + lastDays + 1) != null
-                    ?
-                    //IF THE CURRENT DATE EXISTS IN THE DB THEN I USE THE DATA STORED THERE:
-                    DayView(box.get(index + 1 + lastDays),
-                        widget.calendarMinimizedHeight, widget.dotsColor)
-                    :
-                    //IN CASE THAT DATE IS NOT ON THE DB:
-                    Container(
-                        width: 35,
-                        height: 35,
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white, width: 2),
-                            color: containerColor,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Container(
-                                  height: 6,
-                                  width: 6,
-                                  decoration: BoxDecoration(
-                                      color: widget.dotsColor,
-                                      borderRadius: BorderRadius.circular(20)),
-                                ),
-                                Container(
-                                  height: 6,
-                                  width: 6,
-                                  decoration: BoxDecoration(
-                                      color: widget.dotsColor,
-                                      borderRadius: BorderRadius.circular(20)),
-                                ),
-                              ],
+              monthDays + wPosition,
+              (index) => index < wPosition
+                  ? SizedBox()
+                  : Center(
+                      child: box.get(index - wPosition + lastDays + 1) != null
+                          ?
+                          //IF THE CURRENT DATE EXISTS IN THE DB THEN I USE THE DATA STORED THERE:
+                          DayView(box.get(index - wPosition + 1 + lastDays),
+                              widget.calendarMinimizedHeight, widget.dotsColor)
+                          :
+                          //IN CASE THAT DATE IS NOT ON THE DB:
+                          Container(
+                              width: 35,
+                              height: 35,
+                              decoration: BoxDecoration(
+                                  border:
+                                      Border.all(color: Colors.white, width: 2),
+                                  color: containerColor,
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Container(
+                                        height: 6,
+                                        width: 6,
+                                        decoration: BoxDecoration(
+                                            color: widget.dotsColor,
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                      ),
+                                      Container(
+                                        height: 6,
+                                        width: 6,
+                                        decoration: BoxDecoration(
+                                            color: widget.dotsColor,
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                      ),
+                                    ],
+                                  ),
+                                  Text((index - wPosition + 1).toString(),
+                                      style: GoogleFonts.aboreto())
+                                ],
+                              ),
                             ),
-                            Text((index + 1).toString(),
-                                style: GoogleFonts.aboreto())
-                          ],
-                        ),
-                      ),
-              ),
+                    ),
             ),
           );
         },
@@ -108,6 +248,7 @@ class _CalendarViewState extends State<CalendarView> {
   Widget build(BuildContext context) {
     CalendarController controller = CalendarController();
     box = Hive.box(controller.getRenderedYear(context));
+    bool isLeapYear = DayYearCalculator(DateTime.now()).isLeapYear();
 
     var maxwidth = (MediaQuery.of(context).size.width);
     var maxheight = (MediaQuery.of(context).size.height);
@@ -135,7 +276,9 @@ class _CalendarViewState extends State<CalendarView> {
           const SizedBox(
             height: 15,
           ),
-          myGrid(31, 0, maxwidth * 0.9, maxheight * 0.32),
+          myWeekDays(maxwidth),
+          myGrid(31, 0, maxwidth * 0.9,
+              maxheight <= 600 ? maxheight * 0.5 : maxheight * 0.4, 1),
         ],
       ),
       SizedBox(
@@ -160,7 +303,9 @@ class _CalendarViewState extends State<CalendarView> {
           const SizedBox(
             height: 15,
           ),
-          myGrid(28, 31, maxwidth * 0.9, maxheight * 0.32),
+          myWeekDays(maxwidth),
+          myGrid(isLeapYear ? 29 : 28, 31, maxwidth * 0.9,
+              maxheight <= 600 ? maxheight * 0.5 : maxheight * 0.32, 2),
         ],
       ),
       SizedBox(
@@ -185,7 +330,9 @@ class _CalendarViewState extends State<CalendarView> {
           const SizedBox(
             height: 15,
           ),
-          myGrid(31, 59, maxwidth * 0.9, maxheight * 0.32),
+          myWeekDays(maxwidth),
+          myGrid(31, isLeapYear ? 60 : 59, maxwidth * 0.9,
+              maxheight <= 600 ? maxheight * 0.5 : maxheight * 0.4, 3),
         ],
       ),
       SizedBox(
@@ -210,7 +357,9 @@ class _CalendarViewState extends State<CalendarView> {
           const SizedBox(
             height: 15,
           ),
-          myGrid(32, 90, maxwidth * 0.9, maxheight * 0.32),
+          myWeekDays(maxwidth),
+          myGrid(30, isLeapYear ? 91 : 90, maxwidth * 0.9,
+              maxheight <= 600 ? maxheight * 0.5 : maxheight * 0.4, 4),
         ],
       ),
       SizedBox(
@@ -235,7 +384,9 @@ class _CalendarViewState extends State<CalendarView> {
           const SizedBox(
             height: 15,
           ),
-          myGrid(31, 120, maxwidth * 0.9, maxheight * 0.32),
+          myWeekDays(maxwidth),
+          myGrid(31, isLeapYear ? 121 : 120, maxwidth * 0.9,
+              maxheight <= 600 ? maxheight * 0.5 : maxheight * 0.4, 5),
         ],
       ),
       SizedBox(
@@ -260,7 +411,9 @@ class _CalendarViewState extends State<CalendarView> {
           const SizedBox(
             height: 15,
           ),
-          myGrid(32, 151, maxwidth * 0.9, maxheight * 0.32),
+          myWeekDays(maxwidth),
+          myGrid(30, isLeapYear ? 152 : 151, maxwidth * 0.9,
+              maxheight <= 600 ? maxheight * 0.5 : maxheight * 0.4, 6),
         ],
       ),
       SizedBox(
@@ -285,7 +438,9 @@ class _CalendarViewState extends State<CalendarView> {
           const SizedBox(
             height: 15,
           ),
-          myGrid(31, 181, maxwidth * 0.9, maxheight * 0.32),
+          myWeekDays(maxwidth),
+          myGrid(31, isLeapYear ? 182 : 181, maxwidth * 0.9,
+              maxheight <= 600 ? maxheight * 0.5 : maxheight * 0.4, 7),
         ],
       ),
       SizedBox(
@@ -310,7 +465,9 @@ class _CalendarViewState extends State<CalendarView> {
           const SizedBox(
             height: 15,
           ),
-          myGrid(31, 212, maxwidth * 0.9, maxheight * 0.32),
+          myWeekDays(maxwidth),
+          myGrid(31, isLeapYear ? 213 : 212, maxwidth * 0.9,
+              maxheight <= 600 ? maxheight * 0.5 : maxheight * 0.4, 8),
         ],
       ),
       SizedBox(
@@ -335,7 +492,9 @@ class _CalendarViewState extends State<CalendarView> {
           const SizedBox(
             height: 15,
           ),
-          myGrid(32, 243, maxwidth * 0.9, maxheight * 0.32),
+          myWeekDays(maxwidth),
+          myGrid(30, isLeapYear ? 244 : 243, maxwidth * 0.9,
+              maxheight <= 600 ? maxheight * 0.5 : maxheight * 0.4, 9),
         ],
       ),
       SizedBox(
@@ -360,7 +519,9 @@ class _CalendarViewState extends State<CalendarView> {
           const SizedBox(
             height: 15,
           ),
-          myGrid(31, 273, maxwidth * 0.9, maxheight * 0.32),
+          myWeekDays(maxwidth),
+          myGrid(31, isLeapYear ? 274 : 273, maxwidth * 0.9,
+              maxheight <= 600 ? maxheight * 0.5 : maxheight * 0.4, 10),
         ],
       ),
       SizedBox(
@@ -385,7 +546,9 @@ class _CalendarViewState extends State<CalendarView> {
           const SizedBox(
             height: 15,
           ),
-          myGrid(32, 324, maxwidth * 0.9, maxheight * 0.32),
+          myWeekDays(maxwidth),
+          myGrid(30, isLeapYear ? 305 : 304, maxwidth * 0.9,
+              maxheight <= 600 ? maxheight * 0.5 : maxheight * 0.4, 11),
         ],
       ),
       SizedBox(
@@ -410,7 +573,9 @@ class _CalendarViewState extends State<CalendarView> {
           const SizedBox(
             height: 15,
           ),
-          myGrid(31, 334, maxwidth * 0.9, maxheight * 0.32),
+          myWeekDays(maxwidth),
+          myGrid(31, isLeapYear ? 335 : 334, maxwidth * 0.9,
+              maxheight <= 600 ? maxheight * 0.5 : maxheight * 0.4, 12),
         ],
       ),
       SizedBox(
@@ -423,7 +588,7 @@ class _CalendarViewState extends State<CalendarView> {
     return Container(
         clipBehavior: Clip.hardEdge,
         width: maxwidth,
-        height: maxheight * 0.40,
+        height: maxheight <= 600 ? maxheight * 0.7 : maxheight * 0.50,
         decoration: const BoxDecoration(
           color: Colors.transparent,
         ),

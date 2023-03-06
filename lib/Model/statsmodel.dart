@@ -10,7 +10,7 @@ class Stats {
   int _calmDays = 0;
   int _angryDays = 0;
   int _sickDays = 0;
-  int _neutralDays = 0;
+  int _devilDays = 0;
   int _lovedDays = 0;
   int _badDays = 0;
 
@@ -57,9 +57,9 @@ class Stats {
             (element as DateDao).getEmotion() == Emotion.sick.getName())
         .length;
 
-    _neutralDays = dates.values
+    _devilDays = dates.values
         .where((element) =>
-            (element as DateDao).getEmotion() == Emotion.unassigned.getName())
+            (element as DateDao).getEmotion() == Emotion.devil.getName())
         .length;
   }
 
@@ -83,8 +83,8 @@ class Stats {
     return _angryDays;
   }
 
-  int getNeutralDays() {
-    return _neutralDays;
+  int getDevilDays() {
+    return _devilDays;
   }
 
   int getLovedDays() {

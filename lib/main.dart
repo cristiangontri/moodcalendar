@@ -32,6 +32,7 @@ Future<void> main() async {
 
   //STORAGE DIRECTORY:
   WidgetsFlutterBinding.ensureInitialized();
+
   NotificationService().initNotification();
 
   SystemChrome.setPreferredOrientations([
@@ -73,11 +74,15 @@ Future<void> main() async {
     //Notification default time
   }
   Box userBox = Hive.box("User");
-  if (userBox.length != 2) {
+  if (!userBox.containsKey(1)) {
     await userBox.put(1, "20:00");
-    DateTime now = DateTime.now();
-    DateTime myTime = DateTime(now.year, now.month, now.day, 20, 0, 0);
-    await NotificationService().showNotification(
+
+    String time = userBox.get(1);
+    int hour = int.parse(time.split(":")[0]);
+
+    int minute = int.parse(time.split(":")[1]);
+    DateTime myTime = DateTime(now.year, now.month, now.day, hour, minute, 0);
+    NotificationService().showNotification(
         title: "Hey there!", body: "How was your day?", mytime: myTime);
   }
 
@@ -142,7 +147,8 @@ class _HomeState extends State<Home> {
                 Padding(
                   padding: const EdgeInsets.only(top: 1.0),
                   child: Container(
-                    height: maxheight * 0.16,
+                    height:
+                        maxheight <= 600 ? maxheight * 0.24 : maxheight * 0.16,
                     width: maxwidth * 0.95,
                     decoration: BoxDecoration(
                         color: const Color.fromARGB(255, 229, 245, 234),
@@ -272,13 +278,15 @@ class _HomeState extends State<Home> {
                         ]),
                   ),
                 ),
-                const Spacer(),
                 myCalendar,
-                Center(
-                  child: SizedBox(
-                      height: maxheight * 0.40,
-                      child: Image.asset("assets/MoodBG2.png")),
-                ),
+                maxheight <= 600
+                    ? const SizedBox()
+                    : Center(
+                        child: SizedBox(
+                            height: maxheight * 0.25,
+                            child: Image.asset("assets/MoodBG2.png")),
+                      ),
+                const Spacer(),
               ],
             ),
             const Icon(

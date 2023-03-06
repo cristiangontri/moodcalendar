@@ -2,7 +2,6 @@ import 'package:emotionscalendar/Controller/controller.dart';
 import 'package:emotionscalendar/View/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 class InfoView extends StatefulWidget {
   final TextEditingController myEditingController = TextEditingController();
@@ -128,6 +127,27 @@ class _InfoViewState extends State<InfoView> {
                               ? () {
                                   sc.changeUserName(
                                       context, widget.myEditingController.text);
+
+                                  final snackbar = SnackBar(
+                                    content: Text(
+                                        "Username succesfuly changed to ${widget.myEditingController.text} ",
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.aboreto(
+                                            textStyle: const TextStyle(
+                                          fontSize: 22,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 1,
+                                        ))),
+                                    backgroundColor: Colors.teal,
+                                    duration: const Duration(seconds: 3),
+                                    shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(15),
+                                            topRight: Radius.circular(15))),
+                                  );
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackbar);
                                   widget.myEditingController.text = "";
                                 }
                               : null,
@@ -170,6 +190,7 @@ class _InfoViewState extends State<InfoView> {
                                 ),
                                 initialEntryMode: TimePickerEntryMode.dialOnly);
                             if (newTime != null) {
+                              // ignore: use_build_context_synchronously
                               sc.changeTime(context,
                                   "${newTime.hour.toString().padLeft(2, '0')}:${newTime.minute.toString().padLeft(2, '0')}");
                               setState(() {
@@ -216,12 +237,98 @@ class _InfoViewState extends State<InfoView> {
                                   setState(() {
                                     changedTime = false;
                                   });
+                                  String time =
+                                      sc.getCurrentNotificationTime(context);
+                                  final snackbar = SnackBar(
+                                    content: Text(
+                                        "Time of notifications succesfuly changed to $time ",
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.aboreto(
+                                            textStyle: const TextStyle(
+                                          fontSize: 22,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 1,
+                                        ))),
+                                    backgroundColor: Colors.teal,
+                                    duration: const Duration(seconds: 3),
+                                    shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(15),
+                                            topRight: Radius.circular(15))),
+                                  );
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackbar);
                                 }
                               : null,
                           child: const Icon(
                             Icons.check_rounded,
                             color: Colors.white,
                           )),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: maxheight * 0.25,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "--",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.aboreto(
+                          textStyle: const TextStyle(
+                        fontSize: 18,
+                        color: containerColor,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1,
+                      )),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    SizedBox(
+                      child: Column(
+                        children: [
+                          Text(
+                            "Version",
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.aboreto(
+                                textStyle: const TextStyle(
+                              fontSize: 18,
+                              color: containerColor,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1,
+                            )),
+                          ),
+                          Text(
+                            "1.0.0",
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.aboreto(
+                                textStyle: const TextStyle(
+                              fontSize: 14,
+                              color: containerColor,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1,
+                            )),
+                          )
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "--",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.aboreto(
+                          textStyle: const TextStyle(
+                        fontSize: 18,
+                        color: containerColor,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1,
+                      )),
                     ),
                   ],
                 )
@@ -237,7 +344,8 @@ class _InfoViewState extends State<InfoView> {
               borderRadius: BorderRadius.only(topRight: Radius.circular(25)),
             ),
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.only(
+                  top: 8.0, bottom: 8.0, left: 15, right: 15),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -257,32 +365,37 @@ class _InfoViewState extends State<InfoView> {
                                 ),
                                 SizedBox(
                                   width: maxwidth,
-                                  child: const Text(
-                                    " Note from the author:",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 25,
-                                        color: Colors.teal),
+                                  child: Center(
+                                    child: Text(
+                                      " To ${SettingsController().getUserName(context)}:",
+                                      style: GoogleFonts.aboreto(
+                                          textStyle: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 23,
+                                              color: Colors.teal)),
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(
                                   height: 10,
                                 ),
                                 RichText(
-                                  textAlign: TextAlign.justify,
-                                  text: const TextSpan(
-                                      style: TextStyle(
-                                          color: textColor,
-                                          fontSize: 18,
-                                          height: 1.8),
-                                      children: <TextSpan>[
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                      style: GoogleFonts.aboreto(
+                                          textStyle: const TextStyle(
+                                              color: textColor,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 17,
+                                              height: 1.8)),
+                                      children: const <TextSpan>[
                                         TextSpan(
                                             text:
                                                 "Thank you very much for trying MOOD. This is a"),
                                         TextSpan(
                                             text: " NON PROFIT PROJECT.",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold)),
+                                            style:
+                                                TextStyle(color: Colors.teal)),
                                         TextSpan(
                                             text:
                                                 " The purpose of it is to make it easier for people "
@@ -290,29 +403,34 @@ class _InfoViewState extends State<InfoView> {
                                       ]),
                                 ),
                                 const SizedBox(
-                                  height: 10,
+                                  height: 30,
                                 ),
                                 SizedBox(
                                   width: maxwidth,
-                                  child: const Text(
-                                    " The Author:",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 25,
-                                        color: Colors.teal),
+                                  child: Center(
+                                    child: Text(
+                                      " The Author:",
+                                      style: GoogleFonts.aboreto(
+                                          textStyle: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 23,
+                                              color: Colors.teal)),
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(
                                   height: 10,
                                 ),
                                 RichText(
-                                  textAlign: TextAlign.justify,
-                                  text: const TextSpan(
-                                      style: TextStyle(
-                                          color: textColor,
-                                          fontSize: 18,
-                                          height: 1.8),
-                                      children: <TextSpan>[
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                      style: GoogleFonts.aboreto(
+                                          textStyle: const TextStyle(
+                                              color: textColor,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 17,
+                                              height: 1.8)),
+                                      children: const <TextSpan>[
                                         TextSpan(
                                             text:
                                                 "Nice to meet you! I am a software engineer student "),
@@ -329,13 +447,15 @@ class _InfoViewState extends State<InfoView> {
                                   height: 10,
                                 ),
                                 RichText(
-                                  textAlign: TextAlign.justify,
-                                  text: const TextSpan(
-                                      style: TextStyle(
-                                          color: textColor,
-                                          fontSize: 18,
-                                          height: 1.8),
-                                      children: <TextSpan>[
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                      style: GoogleFonts.aboreto(
+                                          textStyle: const TextStyle(
+                                              color: textColor,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 17,
+                                              height: 1.8)),
+                                      children: const <TextSpan>[
                                         TextSpan(
                                             text:
                                                 "I am currently creating my portfolio and MOOD. is actually my first ever project."),
@@ -348,13 +468,15 @@ class _InfoViewState extends State<InfoView> {
                                   height: 10,
                                 ),
                                 RichText(
-                                  textAlign: TextAlign.justify,
-                                  text: const TextSpan(
-                                      style: TextStyle(
-                                          color: textColor,
-                                          fontSize: 18,
-                                          height: 1.8),
-                                      children: <TextSpan>[
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                      style: GoogleFonts.aboreto(
+                                          textStyle: const TextStyle(
+                                              color: textColor,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 17,
+                                              height: 1.8)),
+                                      children: const <TextSpan>[
                                         TextSpan(
                                             text:
                                                 "As I mentioned before, I am not aiming to make money with this project, "),
@@ -426,18 +548,22 @@ class _InfoViewState extends State<InfoView> {
                                 )),
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
+                              children: [
                                 Text(
                                   "CRISTIAN",
-                                  style: TextStyle(
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.teal),
+                                  style: GoogleFonts.aboreto(
+                                      textStyle: const TextStyle(
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.teal)),
                                 ),
                                 Text(
                                   "GONZÁLEZ TRILLO",
-                                  style:
-                                      TextStyle(fontSize: 20, color: textColor),
+                                  style: GoogleFonts.aboreto(
+                                      textStyle: const TextStyle(
+                                          fontSize: 19,
+                                          fontWeight: FontWeight.bold,
+                                          color: textColor)),
                                 ),
                               ],
                             )

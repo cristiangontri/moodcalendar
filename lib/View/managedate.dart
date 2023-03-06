@@ -21,6 +21,12 @@ class ManageDate extends StatefulWidget {
 class _ManageDateState extends State<ManageDate> {
   var controller = CalendarController();
   TextEditingController myTextController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    DateDao date = controller.getSelectedDate(context);
+    myTextController.text = date.getNote();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +41,48 @@ class _ManageDateState extends State<ManageDate> {
       backgroundColor: myBackgroundColor,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              clipBehavior: Clip.hardEdge,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(25),
+                border: Border.all(
+                    color: MediaQuery.of(context).viewInsets.bottom != 0
+                        ? Colors.white
+                        : Colors.transparent,
+                    width: 1.5),
+                color: MediaQuery.of(context).viewInsets.bottom != 0
+                    ? Colors.teal
+                    : Colors.transparent,
+              ),
+              child: TextButton(
+                style: const ButtonStyle(
+                    backgroundColor:
+                        MaterialStatePropertyAll(Colors.transparent)),
+                onPressed: () {
+                  controller.changeEmotion(widget.chosen, context);
+
+                  controller.addNote(context, myTextController.text);
+
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "SAVE!",
+                  style: GoogleFonts.aboreto(
+                      textStyle: TextStyle(
+                          color: MediaQuery.of(context).viewInsets.bottom != 0
+                              ? Colors.white
+                              : Colors.transparent,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold)),
+                ),
+              ),
+            ),
+          ),
+        ],
         title: Text(
           "$day/$month/$year",
           style: GoogleFonts.aboreto(
@@ -55,12 +103,19 @@ class _ManageDateState extends State<ManageDate> {
                 topLeft: Radius.circular(25), topRight: Radius.circular(25))),
         height: maxheight,
         width: maxwidth,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: ListView(
+          padding: const EdgeInsets.only(left: 15, right: 15),
           children: [
-            const Spacer(),
-            SizedBox(
-                height: maxheight * 0.65,
+            const SizedBox(
+              height: 20,
+            ),
+            AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                height: MediaQuery.of(context).viewInsets.bottom == 0
+                    ? maxheight * 0.65
+                    : maxheight * 0.4 <= 600
+                        ? maxheight * 0.30
+                        : maxheight * 45,
                 width: maxwidth * 0.91,
                 child: TextField(
                     controller: myTextController,
@@ -93,54 +148,64 @@ class _ManageDateState extends State<ManageDate> {
                               color: Colors.teal,
                               fontWeight: FontWeight.bold)),
                     ))),
-            const Spacer(),
+            const SizedBox(
+              height: 20,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                myContainer(happyColor, "😊", Emotion.happy),
-                myContainer(calmColor, "😴", Emotion.calm),
-                myContainer(cryingColor, "😭", Emotion.crying),
-                myContainer(angryColor, "😡", Emotion.angry),
-                myContainer(badColor, "😞", Emotion.bad),
-                myContainer(lovedColor, "🥰", Emotion.loved),
-                myContainer(sickColor, "🤒", Emotion.sick),
-                myContainer(unasignedColor, "😐", Emotion.unassigned)
+                myContainer(
+                    happyColor, Emotion.happy.getEmoji(), Emotion.happy),
+                myContainer(calmColor, Emotion.calm.getEmoji(), Emotion.calm),
+                myContainer(
+                    cryingColor, Emotion.crying.getEmoji(), Emotion.crying),
+                myContainer(
+                    angryColor, Emotion.angry.getEmoji(), Emotion.angry),
+                myContainer(badColor, Emotion.bad.getEmoji(), Emotion.bad),
+                myContainer(
+                    lovedColor, Emotion.loved.getEmoji(), Emotion.loved),
+                myContainer(sickColor, Emotion.sick.getEmoji(), Emotion.sick),
+                myContainer(devilColor, Emotion.devil.getEmoji(), Emotion.devil)
               ],
             ),
-            const Spacer(),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                width: maxwidth * 0.95,
-                height: maxheight * 0.1,
-                clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25),
-                  border: Border.all(color: Colors.white, width: 1.5),
-                  color: Colors.teal,
-                ),
-                child: TextButton(
-                  style: const ButtonStyle(
-                      backgroundColor:
-                          MaterialStatePropertyAll(Colors.transparent)),
-                  onPressed: () {
-                    controller.changeEmotion(widget.chosen, context);
-
-                    controller.addNote(context, myTextController.text);
-
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    "SAVE!",
-                    style: GoogleFonts.aboreto(
-                        textStyle: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold)),
-                  ),
-                ),
-              ),
+            const SizedBox(
+              height: 10,
             ),
+            MediaQuery.of(context).viewInsets.bottom == 0
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      width: maxwidth * 0.95,
+                      height: maxheight * 0.1,
+                      clipBehavior: Clip.hardEdge,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        border: Border.all(color: Colors.white, width: 1.5),
+                        color: Colors.teal,
+                      ),
+                      child: TextButton(
+                        style: const ButtonStyle(
+                            backgroundColor:
+                                MaterialStatePropertyAll(Colors.transparent)),
+                        onPressed: () {
+                          controller.changeEmotion(widget.chosen, context);
+
+                          controller.addNote(context, myTextController.text);
+
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          "SAVE!",
+                          style: GoogleFonts.aboreto(
+                              textStyle: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink(),
           ],
         ),
       )),
@@ -156,7 +221,10 @@ class _ManageDateState extends State<ManageDate> {
           widget.chosen = e;
         });
       },
-      child: Container(
+      child: AnimatedContainer(
+          duration: const Duration(
+            milliseconds: 200,
+          ),
           width: 35,
           height: 35,
           decoration: BoxDecoration(
@@ -169,10 +237,23 @@ class _ManageDateState extends State<ManageDate> {
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text(
-                  emoji,
-                  style: const TextStyle(fontSize: 20),
-                )
+                emoji != Emotion.devil.getEmoji()
+                    ? Container(
+                        width: 22,
+                        height: 22,
+                        decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(25))),
+                        alignment: Alignment.center,
+                        child: Center(
+                          child: Text(
+                            emoji,
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                        ),
+                      )
+                    : Text(emoji, style: const TextStyle(fontSize: 18)),
               ])),
     );
   }

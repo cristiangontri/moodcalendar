@@ -1,3 +1,4 @@
+import 'package:emotionscalendar/Model/emotion.dart';
 import 'package:emotionscalendar/Model/statsmodel.dart';
 import 'package:emotionscalendar/View/colors.dart';
 import 'package:flutter/material.dart';
@@ -11,14 +12,14 @@ class StatsView extends StatelessWidget {
   Widget build(BuildContext context) {
     Stats myStats = Stats(context);
     final List<ChartData> chartData = [
-      ChartData("😊", myStats.getHappyDays()),
-      ChartData("😴", myStats.getCalmDays()),
-      ChartData("😭", myStats.getCryingDays()),
-      ChartData("😡", myStats.getAngryDays()),
-      ChartData("😞", myStats.getBadDays()),
-      ChartData("🥰", myStats.getLovedDays()),
-      ChartData("🤒", myStats.getSickDays()),
-      ChartData("😐", myStats.getNeutralDays()),
+      ChartData(Emotion.happy.getEmoji(), myStats.getHappyDays()),
+      ChartData(Emotion.calm.getEmoji(), myStats.getCalmDays()),
+      ChartData(Emotion.crying.getEmoji(), myStats.getCryingDays()),
+      ChartData(Emotion.angry.getEmoji(), myStats.getAngryDays()),
+      ChartData(Emotion.bad.getEmoji(), myStats.getBadDays()),
+      ChartData(Emotion.loved.getEmoji(), myStats.getLovedDays()),
+      ChartData(Emotion.sick.getEmoji(), myStats.getSickDays()),
+      ChartData(Emotion.devil.getEmoji(), myStats.getDevilDays()),
     ];
     return Scaffold(
         backgroundColor: myBackgroundColor,

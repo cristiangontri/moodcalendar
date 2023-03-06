@@ -45,7 +45,8 @@ class CalendarController {
 
 class SettingsController {
   String getCurrentNotificationTime(context) {
-    return Provider.of<SettingsModel>(context).getCurrentNotificationTime();
+    return Provider.of<SettingsModel>(context, listen: false)
+        .getCurrentNotificationTime();
   }
 
   String getUserName(context) {
@@ -56,11 +57,11 @@ class SettingsController {
     Provider.of<SettingsModel>(context, listen: false).changeUserName(s);
   }
 
-  void changeTime(context, String s) {
+  Future changeTime(context, String s) async {
     Provider.of<SettingsModel>(context, listen: false).changeTime(s);
   }
 
-  void changeNotification(context) {
+  Future changeNotification(context) async {
     Provider.of<SettingsModel>(context, listen: false).changeNotifications();
   }
 }
