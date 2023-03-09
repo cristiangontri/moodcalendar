@@ -34,7 +34,7 @@ class StatsView extends StatelessWidget {
                   borderRadius: BorderRadius.all(Radius.circular(20))),
               child: SfCartesianChart(
                   title: ChartTitle(
-                      text: "Statistics   ---${myStats.getYear()}---",
+                      text: myStats.getYear(),
                       textStyle: GoogleFonts.aboreto(
                           textStyle: const TextStyle(
                               color: Colors.teal,
@@ -55,6 +55,9 @@ class StatsView extends StatelessWidget {
                   series: <ChartSeries>[
                     // Renders bar chart
                     BarSeries<ChartData, String>(
+                        onCreateRenderer:
+                            (ChartSeries<ChartData, String> series) =>
+                                _CustomColumnSeriesRenderer(),
                         gradient: const LinearGradient(
                           begin: Alignment.topRight,
                           end: Alignment.bottomLeft,
@@ -80,4 +83,36 @@ class ChartData {
   String position;
   int value;
   ChartData(this.position, this.value);
+}
+
+class _CustomColumnSeriesRenderer extends BarSeriesRenderer {
+  _CustomColumnSeriesRenderer();
+
+  @override
+  BarSegment createSegment() {
+    return _ColumnCustomPainter();
+  }
+}
+
+class _ColumnCustomPainter extends BarSegment {
+  final colorList = [
+    happyColor,
+    calmColor,
+    cryingColor,
+    angryColor,
+    badColor,
+    lovedColor,
+    sickColor,
+    devilColor
+  ];
+
+  @override
+  Paint getFillPaint() {
+    final Paint customerFillPaint = Paint();
+    customerFillPaint.isAntiAlias = false;
+
+    customerFillPaint.color = colorList[currentSegmentIndex!];
+    customerFillPaint.style = PaintingStyle.fill;
+    return customerFillPaint;
+  }
 }

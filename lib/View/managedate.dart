@@ -230,7 +230,7 @@ class _ManageDateState extends State<ManageDate> {
           decoration: BoxDecoration(
             border: widget.chosen != e
                 ? Border.all(color: Colors.white, width: 2)
-                : Border.all(color: Colors.teal, width: 4),
+                : Border.all(color: Colors.teal, width: 3),
             color: bg,
             borderRadius: BorderRadius.circular(10),
           ),

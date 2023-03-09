@@ -2,7 +2,6 @@ import 'package:emotionscalendar/Controller/controller.dart';
 import 'package:emotionscalendar/Model/dayyearcalculator.dart';
 import 'package:emotionscalendar/View/colors.dart';
 import 'package:emotionscalendar/View/dayview.dart';
-import 'package:emotionscalendar/db/datedao.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -188,7 +187,7 @@ class _CalendarViewState extends State<CalendarView> {
             children: List.generate(
               monthDays + wPosition,
               (index) => index < wPosition
-                  ? SizedBox()
+                  ? const SizedBox()
                   : Center(
                       child: box.get(index - wPosition + lastDays + 1) != null
                           ?

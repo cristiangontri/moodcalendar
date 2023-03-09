@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:emotionscalendar/Controller/controller.dart';
 import 'package:emotionscalendar/View/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
+
+const String testID = 'cristian';
 
 class InfoView extends StatefulWidget {
   final TextEditingController myEditingController = TextEditingController();
@@ -12,6 +17,67 @@ class InfoView extends StatefulWidget {
 }
 
 class _InfoViewState extends State<InfoView> {
+  final _iap = IAPConnection.instance;
+  final List<PurchaseDetails> _purchases = [];
+  List<ProductDetails> _products = [];
+  StreamSubscription? _subscription;
+
+  // ALL METHODS RELATED TO THE MATCHA PURCHASE
+
+  void _initialize() async {
+    // CHECK IF THE SHOP IS AVAILABLE
+    var _available = await _iap.isAvailable();
+
+    if (_available) {
+      await _getProducts();
+    }
+
+    _subscription = _iap.purchaseStream.listen((event) {
+      setState(() {
+        _purchases.addAll(event);
+      });
+    });
+  }
+
+  checkPurchaseUpdates() {
+    final purchaseUpdated = _iap.purchaseStream;
+    _subscription = purchaseUpdated.listen(_onPurchaseUpdate);
+  }
+
+  void _onPurchaseUpdate(List<PurchaseDetails> purchaseDetailsList) {
+    purchaseDetailsList.forEach(_handlePurchase);
+  }
+
+  void _handlePurchase(PurchaseDetails purchaseDetails) {
+    if (purchaseDetails.pendingCompletePurchase) {
+      _iap.completePurchase(purchaseDetails);
+    }
+  }
+
+  void _buyProduct(ProductDetails prod) async {
+    final PurchaseParam purchaseParam = PurchaseParam(productDetails: prod);
+
+    await _iap.buyConsumable(purchaseParam: purchaseParam, autoConsume: true);
+    checkPurchaseUpdates();
+  }
+
+  Future<void> _getProducts() async {
+    Set<String> ids = {testID};
+    ProductDetailsResponse response = await _iap.queryProductDetails(ids);
+
+    setState(() {
+      _products = response.productDetails;
+    });
+  }
+
+  //----------------------------------------------------------------------
+  @override
+  void initState() {
+    _initialize();
+
+    super.initState();
+  }
+
   bool changedTime = false;
   @override
   Widget build(BuildContext context) {
@@ -351,7 +417,8 @@ class _InfoViewState extends State<InfoView> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(
-                    height: maxheight * 0.77,
+                    height:
+                        maxheight > 600 ? maxheight * 0.77 : maxheight * 0.70,
                     child: Stack(children: [
                       Stack(
                           alignment: AlignmentDirectional.bottomCenter,
@@ -398,8 +465,12 @@ class _InfoViewState extends State<InfoView> {
                                                 TextStyle(color: Colors.teal)),
                                         TextSpan(
                                             text:
-                                                " The purpose of it is to make it easier for people "
-                                                "to detect issues related to mental health by monitoring their mood.")
+                                                " The purpose of it is to make it easier for people to"),
+                                        TextSpan(
+                                            text:
+                                                " detect issues related to mental health by monitoring their mood.",
+                                            style:
+                                                TextStyle(color: Colors.teal))
                                       ]),
                                 ),
                                 const SizedBox(
@@ -432,8 +503,12 @@ class _InfoViewState extends State<InfoView> {
                                               height: 1.8)),
                                       children: const <TextSpan>[
                                         TextSpan(
+                                            text: "Nice to meet you! ",
+                                            style:
+                                                TextStyle(color: Colors.teal)),
+                                        TextSpan(
                                             text:
-                                                "Nice to meet you! I am a software engineer student "),
+                                                "I am a software engineer student "),
                                         TextSpan(
                                             text: "(at the moment)",
                                             style: TextStyle(
@@ -457,11 +532,14 @@ class _InfoViewState extends State<InfoView> {
                                               height: 1.8)),
                                       children: const <TextSpan>[
                                         TextSpan(
-                                            text:
-                                                "I am currently creating my portfolio and MOOD. is actually my first ever project."),
+                                          text:
+                                              "I am currently creating my portfolio and MOOD. is actually my first ever project.",
+                                        ),
                                         TextSpan(
                                             text:
-                                                "I hope you are enjoying my app and that most of your days are HappyDays!"),
+                                                " I hope you are enjoying my app and that most of your days are HappyDays!",
+                                            style:
+                                                TextStyle(color: Colors.teal)),
                                       ]),
                                 ),
                                 const SizedBox(
@@ -478,12 +556,27 @@ class _InfoViewState extends State<InfoView> {
                                               height: 1.8)),
                                       children: const <TextSpan>[
                                         TextSpan(
-                                            text:
-                                                "As I mentioned before, I am not aiming to make money with this project, "),
+                                            text: "As I mentioned before,"),
                                         TextSpan(
                                             text:
-                                                "but, if you want to contribute to my future projects, theres a button down this paragraph "
-                                                "that will allow you to donate the amount of money you want."),
+                                                " I am not aiming to make money with this project, ",
+                                            style:
+                                                TextStyle(color: Colors.teal)),
+                                        TextSpan(text: "but, if you want to "),
+                                        TextSpan(
+                                            text:
+                                                " contribute to my future projects,",
+                                            style:
+                                                TextStyle(color: Colors.teal)),
+                                        TextSpan(
+                                            text:
+                                                " theres a button down this paragraph "
+                                                "that will allow you to "),
+                                        TextSpan(
+                                            text:
+                                                "donate me the value of a matcha tea.",
+                                            style:
+                                                TextStyle(color: Colors.teal)),
                                       ]),
                                 ),
                                 SizedBox(
@@ -516,14 +609,25 @@ class _InfoViewState extends State<InfoView> {
                                       Radius.circular(25),
                                     )),
                                 child: TextButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    _buyProduct(_products.first);
+                                  },
                                   style: const ButtonStyle(
                                       backgroundColor: MaterialStatePropertyAll(
                                           Colors.transparent)),
-                                  child: const Text(
-                                    "Buy me a Coffee",
-                                    style: TextStyle(
-                                        fontSize: 22, color: Colors.white),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: const [
+                                      Text(
+                                        "Matcha for the Author  ",
+                                        style: TextStyle(
+                                            fontSize: 22, color: Colors.white),
+                                      ),
+                                      Icon(
+                                        Icons.coffee_rounded,
+                                        color: Colors.white,
+                                      )
+                                    ],
                                   ),
                                 ))
                           ]),
@@ -533,7 +637,9 @@ class _InfoViewState extends State<InfoView> {
                       ),
                       Container(
                         padding: const EdgeInsets.all(10),
-                        height: maxheight * 0.22,
+                        height: maxheight <= 600
+                            ? maxheight * 0.20
+                            : maxheight * 0.22,
                         decoration: BoxDecoration(
                             color: Colors.white,
                             border: Border.all(color: containerColor, width: 2),
@@ -582,11 +688,14 @@ class _InfoViewState extends State<InfoView> {
   }
 }
 
-class MyBehavior extends ScrollBehavior {
-  //HIDES SCROLL GLOW
-  @override
-  Widget buildOverscrollIndicator(
-      BuildContext context, Widget child, ScrollableDetails details) {
-    return child;
+class IAPConnection {
+  static InAppPurchase? _instance;
+  static set instance(InAppPurchase value) {
+    _instance = value;
+  }
+
+  static InAppPurchase get instance {
+    _instance ??= InAppPurchase.instance;
+    return _instance!;
   }
 }

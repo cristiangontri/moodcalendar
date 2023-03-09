@@ -17,14 +17,17 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   List<String> images = [
     "assets/moodTitle2.png",
+    "assets/Notes.png",
     "assets/moodTutorial2.png",
     "assets/DragDown.png",
     "assets/Welcome.png",
   ];
   String descMoodTutorial =
-      "Longpress on the current date in order to stablish how you felt that day.";
+      "Longpress on a date in orther to check your notes or enable quick actions.";
   String descDragDownTutorial =
       "Drag down on the main page to see the statistics of your emotions. ";
+  String descNotesTutorial =
+      "Tap on a day to edit it's emotion and add a note.";
   TextEditingController myTextController = TextEditingController();
   int chosen = 0;
   @override
@@ -33,6 +36,7 @@ class _SignInState extends State<SignIn> {
     var maxwidth = (MediaQuery.of(context).size.width);
     List<String> descriptions = [
       "",
+      descNotesTutorial,
       descMoodTutorial,
       descDragDownTutorial,
       ""
@@ -98,10 +102,16 @@ class _SignInState extends State<SignIn> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
                             height: 10,
                             width: 10,
                             decoration: BoxDecoration(
+                                border: chosen == 0
+                                    ? Border.all(
+                                        color: Colors.white, width: 1.5)
+                                    : Border.all(
+                                        color: myBackgroundColor, width: 0),
                                 color: (chosen == 0)
                                     ? Colors.teal
                                     : const Color.fromARGB(108, 0, 92, 82),
@@ -111,10 +121,16 @@ class _SignInState extends State<SignIn> {
                           const SizedBox(
                             width: 5,
                           ),
-                          Container(
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
                             height: 10,
                             width: 10,
                             decoration: BoxDecoration(
+                                border: chosen == 1
+                                    ? Border.all(
+                                        color: Colors.white, width: 1.5)
+                                    : Border.all(
+                                        color: myBackgroundColor, width: 0),
                                 color: (chosen == 1)
                                     ? Colors.teal
                                     : const Color.fromARGB(108, 0, 92, 82),
@@ -124,10 +140,16 @@ class _SignInState extends State<SignIn> {
                           const SizedBox(
                             width: 5,
                           ),
-                          Container(
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
                             height: 10,
                             width: 10,
                             decoration: BoxDecoration(
+                                border: chosen == 2
+                                    ? Border.all(
+                                        color: Colors.white, width: 1.5)
+                                    : Border.all(
+                                        color: myBackgroundColor, width: 0),
                                 color: (chosen == 2)
                                     ? Colors.teal
                                     : const Color.fromARGB(108, 0, 92, 82),
@@ -137,10 +159,35 @@ class _SignInState extends State<SignIn> {
                           const SizedBox(
                             width: 5,
                           ),
-                          Container(
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
                             height: 10,
                             width: 10,
                             decoration: BoxDecoration(
+                                border: chosen == 3
+                                    ? Border.all(
+                                        color: Colors.white, width: 1.5)
+                                    : Border.all(
+                                        color: myBackgroundColor, width: 0),
+                                color: (chosen == 3)
+                                    ? Colors.teal
+                                    : const Color.fromARGB(108, 0, 92, 82),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(15))),
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            height: 10,
+                            width: 10,
+                            decoration: BoxDecoration(
+                                border: chosen == 4
+                                    ? Border.all(
+                                        color: Colors.white, width: 1.5)
+                                    : Border.all(
+                                        color: myBackgroundColor, width: 0),
                                 color: (chosen == 3)
                                     ? Colors.teal
                                     : const Color.fromARGB(108, 0, 92, 82),

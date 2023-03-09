@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:emotionscalendar/Controller/controller.dart';
 import 'package:emotionscalendar/Model/calendar.dart';
 import 'package:emotionscalendar/Model/notification_service.dart';
+
 import 'package:emotionscalendar/Model/settingsmodel.dart';
 import 'package:emotionscalendar/View/infoview.dart';
 import 'package:emotionscalendar/View/mainpage.dart';
@@ -95,14 +96,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String year = DateTime.now().year.toString();
-    DateDao currentDate = Hive.box(year).getAt(Hive.box(year).length - 1);
+    int yearDay = DayYearCalculator(DateTime.now()).toYearDay();
+    DateDao currentDate = Hive.box(year).get(yearDay);
     Box userBox = Hive.box("User");
     return MultiProvider(
         //START CALENDAR PROVIDER
         providers: [
           ChangeNotifierProvider(
               create: (context) => Calendar(currentDate, currentDate)),
-          ChangeNotifierProvider(create: (context) => SettingsModel())
+          ChangeNotifierProvider(create: (context) => SettingsModel()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -278,21 +280,16 @@ class _HomeState extends State<Home> {
                         ]),
                   ),
                 ),
+                maxheight <= 600 ? const Spacer() : const SizedBox.shrink(),
                 myCalendar,
                 maxheight <= 600
-                    ? const SizedBox()
+                    ? const SizedBox.shrink()
                     : Center(
                         child: SizedBox(
                             height: maxheight * 0.25,
                             child: Image.asset("assets/MoodBG2.png")),
                       ),
-                const Spacer(),
               ],
-            ),
-            const Icon(
-              Icons.arrow_downward_rounded,
-              color: containerColor,
-              size: 25,
             ),
           ]),
         ));

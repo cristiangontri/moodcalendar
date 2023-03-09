@@ -193,7 +193,7 @@ class _DayViewState extends State<DayView> {
                           alignment: AlignmentDirectional.center,
                           child: ListView(
                               padding: const EdgeInsets.only(
-                                  top: 10, left: 5, right: 5),
+                                  top: 10, left: 9, right: 9),
                               children: [
                                 Text(
                                   widget.date.getNote() != ""
@@ -377,7 +377,7 @@ class _DayViewState extends State<DayView> {
                             alignment: Alignment.center,
                             child: Padding(
                               padding: const EdgeInsets.only(
-                                  top: 10, left: 5, right: 5),
+                                  top: 10, left: 8, right: 8),
                               child: ListView(children: [
                                 Text(
                                   widget.date.getNote() != ""
@@ -442,7 +442,13 @@ class _DayViewState extends State<DayView> {
                                       ],
                                     ),
                                     Text(widget.date.getDay().toString(),
-                                        style: GoogleFonts.aboreto())
+                                        style: GoogleFonts.aboreto(
+                                            textStyle: TextStyle(
+                                                color: widget.date
+                                                            .getEmotion() ==
+                                                        Emotion.bad.getName()
+                                                    ? Colors.white
+                                                    : Colors.black)))
                                   ])),
                         ),
                         Container(
