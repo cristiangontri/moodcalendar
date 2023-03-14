@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../Model/emotion.dart';
+import '../main.dart';
 
 class DayView extends StatefulWidget {
   final DateDao date;
@@ -198,7 +199,10 @@ class _DayViewState extends State<DayView> {
                                 Text(
                                   widget.date.getNote() != ""
                                       ? widget.date.getNote()
-                                      : "No notes... (Press here to add a note).",
+                                      : systemLocales.first.toString() ==
+                                              "es_ES"
+                                          ? "Sin notas... (Pulsa aquí para añadir una nota.)"
+                                          : "No notes... (Press here to add a note).",
                                   textAlign: widget.date.getNote().length < 25
                                       ? TextAlign.center
                                       : TextAlign.center,
@@ -382,7 +386,10 @@ class _DayViewState extends State<DayView> {
                                 Text(
                                   widget.date.getNote() != ""
                                       ? widget.date.getNote()
-                                      : "No notes this day :(",
+                                      : systemLocales.first.toString() ==
+                                              "es_ES"
+                                          ? "No hay notas este día."
+                                          : "No notes this day :(",
                                   textAlign: widget.date.getNote().length < 25
                                       ? TextAlign.center
                                       : TextAlign.start,

@@ -1,5 +1,6 @@
 import 'package:emotionscalendar/View/cardview.dart';
 import 'package:emotionscalendar/View/mainpage.dart';
+import 'package:emotionscalendar/main.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -22,12 +23,15 @@ class _SignInState extends State<SignIn> {
     "assets/DragDown.png",
     "assets/Welcome.png",
   ];
-  String descMoodTutorial =
-      "Longpress on a date in orther to check your notes or enable quick actions.";
-  String descDragDownTutorial =
-      "Drag down on the main page to see the statistics of your emotions. ";
-  String descNotesTutorial =
-      "Tap on a day to edit it's emotion and add a note.";
+  String descMoodTutorial = systemLocales.first.toString() == "es_ES"
+      ? "Mantén pulsado en una fecha para visualizar tus notas y abrir las acciones rápidas."
+      : "Longpress on a date in orther to check your notes or enable quick actions.";
+  String descDragDownTutorial = systemLocales.first.toString() == "es_ES"
+      ? "Arrastra hacia abajo en la página principal para ver las estadísticas de tus emociones"
+      : "Drag down on the main page to see the statistics of your emotions. ";
+  String descNotesTutorial = systemLocales.first.toString() == "es_ES"
+      ? "Pulsa en el día actual para editar su emoción y añadir una nota"
+      : "Tap on the current day to edit it's emotion and add a note.";
   TextEditingController myTextController = TextEditingController();
   int chosen = 0;
   @override
@@ -231,7 +235,9 @@ class _SignInState extends State<SignIn> {
                           }
                         : null,
                     child: Text(
-                      "DONE!",
+                      systemLocales.first.toString() == "es_ES"
+                          ? "HECHO!"
+                          : "DONE!",
                       style: GoogleFonts.aboreto(
                           textStyle: const TextStyle(
                               color: Colors.white,

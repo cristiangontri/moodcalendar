@@ -2,6 +2,8 @@ import 'package:emotionscalendar/View/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../main.dart';
+
 class MyCard extends StatefulWidget {
   double height;
   double width;
@@ -79,7 +81,10 @@ class _MyCardState extends State<MyCard> {
                               textStyle: const TextStyle(
                                   color: Colors.teal, fontSize: 30)),
                           decoration: InputDecoration(
-                              labelText: "Your Name Please",
+                              labelText:
+                                  systemLocales.first.toString() == "es_ES"
+                                      ? "Tu Nombre  "
+                                      : "Your Name Please",
                               labelStyle: const TextStyle(color: Colors.teal),
                               floatingLabelStyle: const TextStyle(
                                   color: Colors.teal,

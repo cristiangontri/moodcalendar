@@ -4,6 +4,7 @@ import 'package:emotionscalendar/db/datedao.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../main.dart';
 import 'colors.dart';
 
 class ManageDate extends StatefulWidget {
@@ -132,7 +133,9 @@ class _ManageDateState extends State<ManageDate> {
                             height: 2)),
                     decoration: InputDecoration(
                       hintText: widget.date.getNote() == ""
-                          ? "Anything to highlight about your day?"
+                          ? systemLocales.first.toString() == "es_ES"
+                              ? "¿Algo que destacar de tu día?"
+                              : "Anything to highlight about your day?"
                           : widget.date.getNote(),
                       enabledBorder: OutlineInputBorder(
                           borderSide: const BorderSide(
@@ -195,7 +198,9 @@ class _ManageDateState extends State<ManageDate> {
                           Navigator.pop(context);
                         },
                         child: Text(
-                          "SAVE!",
+                          systemLocales.first.toString() == "es_ES"
+                              ? "Guardar!"
+                              : "SAVE!",
                           style: GoogleFonts.aboreto(
                               textStyle: const TextStyle(
                                   color: Colors.white,

@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
+import '../main.dart';
+
 const String testID = 'cristian';
 
 class InfoView extends StatefulWidget {
@@ -31,12 +33,6 @@ class _InfoViewState extends State<InfoView> {
     if (_available) {
       await _getProducts();
     }
-
-    _subscription = _iap.purchaseStream.listen((event) {
-      setState(() {
-        _purchases.addAll(event);
-      });
-    });
   }
 
   checkPurchaseUpdates() {
@@ -94,23 +90,29 @@ class _InfoViewState extends State<InfoView> {
         appBar: AppBar(
           elevation: 0,
           title: Text(
-            "Configuration",
+            systemLocales.first.toString() == "es_ES"
+                ? "Configuración"
+                : "Configuration",
             style: GoogleFonts.aboreto(
                 textStyle: const TextStyle(
                     fontWeight: FontWeight.bold, letterSpacing: 1)),
           ),
           backgroundColor: myBackgroundColor,
-          bottom: const TabBar(
+          bottom: TabBar(
               unselectedLabelColor: containerColor,
               indicatorColor: Colors.transparent,
               tabs: [
                 Tab(
-                  icon: Icon(Icons.settings),
-                  text: "Settings",
+                  icon: const Icon(Icons.settings),
+                  text: systemLocales.first.toString() == "es_ES"
+                      ? "Ajustes"
+                      : "Settings",
                 ),
                 Tab(
-                  icon: Icon(Icons.person_2_rounded),
-                  text: "Author",
+                  icon: const Icon(Icons.person_2_rounded),
+                  text: systemLocales.first.toString() == "es_ES"
+                      ? "Autor"
+                      : "Author",
                 )
               ]),
         ),
@@ -127,7 +129,9 @@ class _InfoViewState extends State<InfoView> {
               padding: const EdgeInsets.all(25.0),
               children: [
                 Text(
-                  "USERNAME:",
+                  systemLocales.first.toString() == "es_ES"
+                      ? "Nombre de Usuario:"
+                      : "USERNAME:",
                   style: GoogleFonts.aboreto(
                       textStyle: const TextStyle(
                           fontSize: 22,
@@ -196,7 +200,10 @@ class _InfoViewState extends State<InfoView> {
 
                                   final snackbar = SnackBar(
                                     content: Text(
-                                        "Username succesfuly changed to ${widget.myEditingController.text} ",
+                                        systemLocales.first.toString() ==
+                                                "es_ES"
+                                            ? "Nombre de usuario cambiado a ${widget.myEditingController.text}"
+                                            : "Username succesfuly changed to ${widget.myEditingController.text} ",
                                         textAlign: TextAlign.center,
                                         style: GoogleFonts.aboreto(
                                             textStyle: const TextStyle(
@@ -228,7 +235,9 @@ class _InfoViewState extends State<InfoView> {
                   height: 100,
                 ),
                 Text(
-                  "NOTIFICATIONS:",
+                  systemLocales.first.toString() == "es_ES"
+                      ? "Notificaciones:"
+                      : "NOTIFICATIONS:",
                   style: GoogleFonts.aboreto(
                       textStyle: const TextStyle(
                           fontSize: 22,
@@ -307,7 +316,10 @@ class _InfoViewState extends State<InfoView> {
                                       sc.getCurrentNotificationTime(context);
                                   final snackbar = SnackBar(
                                     content: Text(
-                                        "Time of notifications succesfuly changed to $time ",
+                                        systemLocales.first.toString() ==
+                                                "es_ES"
+                                            ? "Tiempo de las notificaciones cambiado a $time"
+                                            : "Time of notifications succesfuly changed to $time ",
                                         textAlign: TextAlign.center,
                                         style: GoogleFonts.aboreto(
                                             textStyle: const TextStyle(
@@ -358,7 +370,9 @@ class _InfoViewState extends State<InfoView> {
                       child: Column(
                         children: [
                           Text(
-                            "Version",
+                            systemLocales.first.toString() == "es_ES"
+                                ? "Versión"
+                                : "Version",
                             textAlign: TextAlign.center,
                             style: GoogleFonts.aboreto(
                                 textStyle: const TextStyle(
@@ -369,7 +383,7 @@ class _InfoViewState extends State<InfoView> {
                             )),
                           ),
                           Text(
-                            "1.0.0",
+                            "1.0.1",
                             textAlign: TextAlign.center,
                             style: GoogleFonts.aboreto(
                                 textStyle: const TextStyle(
@@ -434,7 +448,9 @@ class _InfoViewState extends State<InfoView> {
                                   width: maxwidth,
                                   child: Center(
                                     child: Text(
-                                      " To ${SettingsController().getUserName(context)}:",
+                                      systemLocales.first.toString() == "es_ES"
+                                          ? "Para ${SettingsController().getUserName(context)}"
+                                          : " To ${SettingsController().getUserName(context)}:",
                                       style: GoogleFonts.aboreto(
                                           textStyle: const TextStyle(
                                               fontWeight: FontWeight.bold,
@@ -455,22 +471,35 @@ class _InfoViewState extends State<InfoView> {
                                               fontWeight: FontWeight.bold,
                                               fontSize: 17,
                                               height: 1.8)),
-                                      children: const <TextSpan>[
+                                      children: <TextSpan>[
                                         TextSpan(
-                                            text:
-                                                "Thank you very much for trying MOOD. This is a"),
+                                            text: systemLocales.first
+                                                        .toString() ==
+                                                    "es_ES"
+                                                ? "Muchísimas gracias por probar MOOD. Este es un"
+                                                : "Thank you very much for trying MOOD. This is a"),
                                         TextSpan(
-                                            text: " NON PROFIT PROJECT.",
-                                            style:
-                                                TextStyle(color: Colors.teal)),
+                                            text: systemLocales.first
+                                                        .toString() ==
+                                                    "es_ES"
+                                                ? "Proyecto sin ánimo de lucro"
+                                                : " NON PROFIT PROJECT.",
+                                            style: const TextStyle(
+                                                color: Colors.teal)),
                                         TextSpan(
-                                            text:
-                                                " The purpose of it is to make it easier for people to"),
+                                            text: systemLocales.first
+                                                        .toString() ==
+                                                    "es_ES"
+                                                ? "El propósito de este es facilitar a las personas el"
+                                                : " The purpose of it is to make it easier for people to"),
                                         TextSpan(
-                                            text:
-                                                " detect issues related to mental health by monitoring their mood.",
-                                            style:
-                                                TextStyle(color: Colors.teal))
+                                            text: systemLocales.first
+                                                        .toString() ==
+                                                    "es_ES"
+                                                ? "detectar problemas relacionados con la salud mental mediante el seguimiento de los estados de ánimo."
+                                                : " detect issues related to mental health by monitoring their mood.",
+                                            style: const TextStyle(
+                                                color: Colors.teal))
                                       ]),
                                 ),
                                 const SizedBox(
@@ -480,7 +509,9 @@ class _InfoViewState extends State<InfoView> {
                                   width: maxwidth,
                                   child: Center(
                                     child: Text(
-                                      " The Author:",
+                                      systemLocales.first.toString() == "es_ES"
+                                          ? "El Autor"
+                                          : "The Author",
                                       style: GoogleFonts.aboreto(
                                           textStyle: const TextStyle(
                                               fontWeight: FontWeight.bold,
@@ -501,21 +532,35 @@ class _InfoViewState extends State<InfoView> {
                                               fontWeight: FontWeight.bold,
                                               fontSize: 17,
                                               height: 1.8)),
-                                      children: const <TextSpan>[
+                                      children: <TextSpan>[
                                         TextSpan(
-                                            text: "Nice to meet you! ",
-                                            style:
-                                                TextStyle(color: Colors.teal)),
+                                            text: systemLocales.first
+                                                        .toString() ==
+                                                    "es_ES"
+                                                ? "Encantado de conocerte! "
+                                                : "Nice to meet you! ",
+                                            style: const TextStyle(
+                                                color: Colors.teal)),
                                         TextSpan(
-                                            text:
-                                                "I am a software engineer student "),
+                                            text: systemLocales.first
+                                                        .toString() ==
+                                                    "es_ES"
+                                                ? "Soy un estudiante de ingeniería informática "
+                                                : "I am a software engineer student "),
                                         TextSpan(
-                                            text: "(at the moment)",
-                                            style: TextStyle(
+                                            text: systemLocales.first
+                                                        .toString() ==
+                                                    "es_ES"
+                                                ? "(En este momento)"
+                                                : "(at the moment)",
+                                            style: const TextStyle(
                                                 color: containerColor)),
                                         TextSpan(
-                                            text:
-                                                " based in A Coruña, a small city in north-west Spain.")
+                                            text: systemLocales.first
+                                                        .toString() ==
+                                                    "es_ES"
+                                                ? " de A Coruña, una pequeña ciudad en el norte de España."
+                                                : " based in A Coruña, a small city in north-west Spain.")
                                       ]),
                                 ),
                                 const SizedBox(
@@ -530,16 +575,22 @@ class _InfoViewState extends State<InfoView> {
                                               fontWeight: FontWeight.bold,
                                               fontSize: 17,
                                               height: 1.8)),
-                                      children: const <TextSpan>[
+                                      children: <TextSpan>[
                                         TextSpan(
-                                          text:
-                                              "I am currently creating my portfolio and MOOD. is actually my first ever project.",
+                                          text: systemLocales.first
+                                                      .toString() ==
+                                                  "es_ES"
+                                              ? "Actualmente estoy creando mi portfolio y MOOD. es mi primer proyecto."
+                                              : "I am currently creating my portfolio and MOOD. is actually my first ever project.",
                                         ),
                                         TextSpan(
-                                            text:
-                                                " I hope you are enjoying my app and that most of your days are HappyDays!",
-                                            style:
-                                                TextStyle(color: Colors.teal)),
+                                            text: systemLocales.first
+                                                        .toString() ==
+                                                    "es_ES"
+                                                ? " Espero que estés disfrutando mi aplicación y que la mayoría de tus días sean dias felices!"
+                                                : " I hope you are enjoying my app and that most of your days are HappyDays!",
+                                            style: const TextStyle(
+                                                color: Colors.teal)),
                                       ]),
                                 ),
                                 const SizedBox(
@@ -554,29 +605,50 @@ class _InfoViewState extends State<InfoView> {
                                               fontWeight: FontWeight.bold,
                                               fontSize: 17,
                                               height: 1.8)),
-                                      children: const <TextSpan>[
+                                      children: <TextSpan>[
                                         TextSpan(
-                                            text: "As I mentioned before,"),
+                                            text: systemLocales.first
+                                                        .toString() ==
+                                                    "es_ES"
+                                                ? "Como he mencionado antes,"
+                                                : "As I mentioned before,"),
                                         TextSpan(
-                                            text:
-                                                " I am not aiming to make money with this project, ",
-                                            style:
-                                                TextStyle(color: Colors.teal)),
-                                        TextSpan(text: "but, if you want to "),
+                                            text: systemLocales.first
+                                                        .toString() ==
+                                                    "es_ES"
+                                                ? " No busco hacer dinero con este proyecto, "
+                                                : " I am not aiming to make money with this project, ",
+                                            style: const TextStyle(
+                                                color: Colors.teal)),
                                         TextSpan(
-                                            text:
-                                                " contribute to my future projects,",
-                                            style:
-                                                TextStyle(color: Colors.teal)),
+                                            text: systemLocales.first
+                                                        .toString() ==
+                                                    "es_ES"
+                                                ? "pero, si quieres "
+                                                : "but, if you want to "),
                                         TextSpan(
-                                            text:
-                                                " theres a button down this paragraph "
-                                                "that will allow you to "),
+                                            text: systemLocales.first
+                                                        .toString() ==
+                                                    "es_ES"
+                                                ? " contribuir a mis futuros proyectos,"
+                                                : " contribute to my future projects,",
+                                            style: const TextStyle(
+                                                color: Colors.teal)),
                                         TextSpan(
-                                            text:
-                                                "donate me the value of a matcha tea.",
-                                            style:
-                                                TextStyle(color: Colors.teal)),
+                                            text: systemLocales.first
+                                                        .toString() ==
+                                                    "es_ES"
+                                                ? " Hay un botón debajo de este párrafo que te permitirá "
+                                                : " there is a button down this paragraph "
+                                                    "that will allow you to "),
+                                        TextSpan(
+                                            text: systemLocales.first
+                                                        .toString() ==
+                                                    "es_ES"
+                                                ? "donarme el valor de un té matcha."
+                                                : "donate me the value of a matcha tea.",
+                                            style: const TextStyle(
+                                                color: Colors.teal)),
                                       ]),
                                 ),
                                 SizedBox(
@@ -617,13 +689,18 @@ class _InfoViewState extends State<InfoView> {
                                           Colors.transparent)),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
+                                    children: [
                                       Text(
-                                        "Matcha for the Author  ",
-                                        style: TextStyle(
-                                            fontSize: 22, color: Colors.white),
-                                      ),
-                                      Icon(
+                                          systemLocales.first.toString() ==
+                                                  "es_ES"
+                                              ? "Té Matcha para el Autor "
+                                              : "Matcha for the Author  ",
+                                          style: GoogleFonts.aboreto(
+                                            textStyle: const TextStyle(
+                                                fontSize: 19,
+                                                color: Colors.white),
+                                          )),
+                                      const Icon(
                                         Icons.coffee_rounded,
                                         color: Colors.white,
                                       )

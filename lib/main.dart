@@ -24,6 +24,8 @@ import 'package:provider/provider.dart';
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
+final List<Locale> systemLocales = WidgetsBinding.instance.window.locales;
+
 Future<void> main() async {
   //STATUSBAR COLOR:
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -74,6 +76,9 @@ Future<void> main() async {
 
     //Notification default time
   }
+
+  //Language:
+
   Box userBox = Hive.box("User");
   if (!userBox.containsKey(1)) {
     await userBox.put(1, "20:00");
@@ -84,7 +89,13 @@ Future<void> main() async {
     int minute = int.parse(time.split(":")[1]);
     DateTime myTime = DateTime(now.year, now.month, now.day, hour, minute, 0);
     NotificationService().showNotification(
-        title: "Hey there!", body: "How was your day?", mytime: myTime);
+        title: systemLocales.first.toString() == "es_ES"
+            ? "Buenas!"
+            : "Hey there!",
+        body: systemLocales.first.toString() == "es_ES"
+            ? "¿Que tal te ha ido hoy?"
+            : "How was your day?",
+        mytime: myTime);
   }
 
   runApp(const MyApp());

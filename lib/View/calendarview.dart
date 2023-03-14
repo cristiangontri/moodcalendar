@@ -8,6 +8,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
+import '../main.dart';
+
 class CalendarView extends StatefulWidget {
   //MAIN VIEW OF APPLICATION
   final Color backgroundColor;
@@ -69,7 +71,50 @@ class _CalendarViewState extends State<CalendarView> {
           ),
           SizedBox(
             width: maxwidth / 11,
-            child: Text("Mon",
+            child:
+                Text(systemLocales.first.toString() == "es_ES" ? "Lun" : "Mon",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.aboreto(
+                      textStyle: const TextStyle(
+                        color: containerColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    )),
+          ),
+          const Spacer(),
+          SizedBox(
+            width: maxwidth / 11,
+            child:
+                Text(systemLocales.first.toString() == "es_ES" ? "Mar" : "Tue",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.aboreto(
+                      textStyle: const TextStyle(
+                        color: containerColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    )),
+          ),
+          const Spacer(),
+          SizedBox(
+            width: maxwidth / 11,
+            child:
+                Text(systemLocales.first.toString() == "es_ES" ? "Mie" : "Wed",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.aboreto(
+                      textStyle: const TextStyle(
+                        color: containerColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    )),
+          ),
+          const Spacer(),
+          SizedBox(
+            width: maxwidth / 11,
+            child: Text(
+                systemLocales.first.toString() == "es_ES" ? "Jue " : "Thu ",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.aboreto(
                   textStyle: const TextStyle(
@@ -82,80 +127,44 @@ class _CalendarViewState extends State<CalendarView> {
           const Spacer(),
           SizedBox(
             width: maxwidth / 11,
-            child: Text("Tue",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.aboreto(
-                  textStyle: const TextStyle(
-                    color: containerColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                )),
+            child:
+                Text(systemLocales.first.toString() == "es_ES" ? "Vie" : "Fri",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.aboreto(
+                      textStyle: const TextStyle(
+                        color: containerColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    )),
           ),
           const Spacer(),
           SizedBox(
             width: maxwidth / 11,
-            child: Text("Wed",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.aboreto(
-                  textStyle: const TextStyle(
-                    color: containerColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                )),
+            child:
+                Text(systemLocales.first.toString() == "es_ES" ? "Sab" : "Sat",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.aboreto(
+                      textStyle: const TextStyle(
+                        color: containerColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    )),
           ),
           const Spacer(),
           SizedBox(
             width: maxwidth / 11,
-            child: Text("Thu ",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.aboreto(
-                  textStyle: const TextStyle(
-                    color: containerColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                )),
-          ),
-          const Spacer(),
-          SizedBox(
-            width: maxwidth / 11,
-            child: Text("Fri",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.aboreto(
-                  textStyle: const TextStyle(
-                    color: containerColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                )),
-          ),
-          const Spacer(),
-          SizedBox(
-            width: maxwidth / 11,
-            child: Text("Sat",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.aboreto(
-                  textStyle: const TextStyle(
-                    color: containerColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                )),
-          ),
-          const Spacer(),
-          SizedBox(
-            width: maxwidth / 11,
-            child: Text("Sun",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.aboreto(
-                  textStyle: const TextStyle(
-                    color: containerColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                )),
+            child:
+                Text(systemLocales.first.toString() == "es_ES" ? "Dom" : "Sun",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.aboreto(
+                      textStyle: const TextStyle(
+                        color: containerColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    )),
           )
         ],
       ),
@@ -263,7 +272,10 @@ class _CalendarViewState extends State<CalendarView> {
             height: 15,
           ),
           Center(
-              child: Text("January",
+              child: Text(
+                  systemLocales.first.toString() == "es_ES"
+                      ? "Enero"
+                      : "January",
                   style: GoogleFonts.aboreto(
                     textStyle: const TextStyle(
                       color: Colors.white,
@@ -290,7 +302,7 @@ class _CalendarViewState extends State<CalendarView> {
           ),
           Center(
               child: Text(
-            "February",
+            systemLocales.first.toString() == "es_ES" ? "Febrero" : "February",
             style: GoogleFonts.aboreto(
               textStyle: const TextStyle(
                   fontWeight: FontWeight.bold,
@@ -317,7 +329,7 @@ class _CalendarViewState extends State<CalendarView> {
           ),
           Center(
               child: Text(
-            "March",
+            systemLocales.first.toString() == "es_ES" ? "Marzo" : "March",
             style: GoogleFonts.aboreto(
               textStyle: const TextStyle(
                   fontWeight: FontWeight.bold,
@@ -344,7 +356,7 @@ class _CalendarViewState extends State<CalendarView> {
           ),
           Center(
               child: Text(
-            "April",
+            systemLocales.first.toString() == "es_ES" ? "Abril" : "April",
             style: GoogleFonts.aboreto(
               textStyle: const TextStyle(
                   fontWeight: FontWeight.bold,
@@ -371,7 +383,7 @@ class _CalendarViewState extends State<CalendarView> {
           ),
           Center(
               child: Text(
-            "May ",
+            systemLocales.first.toString() == "es_ES" ? "Mayo" : "May",
             style: GoogleFonts.aboreto(
               textStyle: const TextStyle(
                   fontWeight: FontWeight.bold,
@@ -398,7 +410,7 @@ class _CalendarViewState extends State<CalendarView> {
           ),
           Center(
               child: Text(
-            "June",
+            systemLocales.first.toString() == "es_ES" ? "Junio" : "June",
             style: GoogleFonts.aboreto(
               textStyle: const TextStyle(
                   fontWeight: FontWeight.bold,
@@ -425,7 +437,7 @@ class _CalendarViewState extends State<CalendarView> {
           ),
           Center(
               child: Text(
-            "July",
+            systemLocales.first.toString() == "es_ES" ? "Julio" : "July",
             style: GoogleFonts.aboreto(
               textStyle: const TextStyle(
                   fontWeight: FontWeight.bold,
@@ -452,7 +464,7 @@ class _CalendarViewState extends State<CalendarView> {
           ),
           Center(
               child: Text(
-            "August",
+            systemLocales.first.toString() == "es_ES" ? "Agosto" : "August",
             style: GoogleFonts.aboreto(
               textStyle: const TextStyle(
                   fontWeight: FontWeight.bold,
@@ -479,7 +491,9 @@ class _CalendarViewState extends State<CalendarView> {
           ),
           Center(
               child: Text(
-            "September",
+            systemLocales.first.toString() == "es_ES"
+                ? "Septiembre"
+                : "September",
             style: GoogleFonts.aboreto(
               textStyle: const TextStyle(
                   fontWeight: FontWeight.bold,
@@ -506,7 +520,7 @@ class _CalendarViewState extends State<CalendarView> {
           ),
           Center(
               child: Text(
-            "October",
+            systemLocales.first.toString() == "es_ES" ? "Octubre" : "October",
             style: GoogleFonts.aboreto(
               textStyle: const TextStyle(
                   fontWeight: FontWeight.bold,
@@ -533,7 +547,9 @@ class _CalendarViewState extends State<CalendarView> {
           ),
           Center(
               child: Text(
-            "November",
+            systemLocales.first.toString() == "es_ES"
+                ? "Noviembre"
+                : "November",
             style: GoogleFonts.aboreto(
               textStyle: const TextStyle(
                   fontWeight: FontWeight.bold,
@@ -560,7 +576,9 @@ class _CalendarViewState extends State<CalendarView> {
           ),
           Center(
               child: Text(
-            "December",
+            systemLocales.first.toString() == "es_ES"
+                ? "Diciembre"
+                : "December",
             style: GoogleFonts.aboreto(
               textStyle: const TextStyle(
                   fontWeight: FontWeight.bold,

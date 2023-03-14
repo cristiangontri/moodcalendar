@@ -2,6 +2,8 @@ import 'package:emotionscalendar/Model/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
+import '../main.dart';
+
 class SettingsModel extends ChangeNotifier {
   final String userbox = 'User';
   String notificationTime = "";
@@ -31,7 +33,13 @@ class SettingsModel extends ChangeNotifier {
     DateTime myTime = DateTime(now.year, now.month, now.day, hour, minute, 0);
 
     NotificationService().showNotification(
-        title: "Hey there!", body: "How was your day?", mytime: myTime);
+        title: systemLocales.first.toString() == "es_ES"
+            ? "Buenas!"
+            : "Hey there!",
+        body: systemLocales.first.toString() == "es_ES"
+            ? "¿Qué tal te ha ido hoy?"
+            : "How was your day?",
+        mytime: myTime);
   }
 
   void changeUserName(String newUN) {
